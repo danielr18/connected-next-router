@@ -14,13 +14,23 @@
     "react-router-redux"
   ],
   "files": [
-    "*.md",
-    "*.js",
-    "lib"
+    "actions.js",
+    "ConnectedRouter.js",
+    "index.js",
+    "middleware.js",
+    "patchRouter.js",
+    "reducer.js",
+    "routerMethods.js",
+    "utils",
+    "structure",
+    "es"
   ],
   "scripts": {
-    "build": "cross-env BABEL_ENV=commonjs babel src --delete-dir-on-start --out-dir lib",
-    "watch": "cross-env BABEL_ENV=commonjs babel src --delete-dir-on-start --out-dir lib -w",
+    "build": "npm run build:cjs && npm run build:es",
+    "build:cjs": "cross-env BABEL_ENV=commonjs babel src -d .",
+    "build:es": "cross-env BABEL_ENV=es babel src -d es",
+    "watch": "cross-env BABEL_ENV=commonjs babel src -d . -w",
+    "clean": "git clean -xdfe node_modules",
     "lint": "eslint ."
   },
   "peerDependencies": {
