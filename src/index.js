@@ -1,2 +1,18 @@
-const ConnectedNextRouter = () => {}
-export default ConnectedNextRouter
+import createAll from './utils/createAll'
+import plainStructure from './structure/plain'
+
+export const {
+  LOCATION_CHANGE,
+  CALL_ROUTER_METHOD,
+  push,
+  replace,
+  go,
+  goBack,
+  goForward,
+  routerActions,
+  ConnectedRouter,
+  routerReducer,
+  createRouterMiddleware,
+  initialRouterState,
+  routerMethods
+} = createAll(plainStructure)
