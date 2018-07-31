@@ -46,7 +46,7 @@ const rootReducer = combineReducers({
 const routerMiddleware = createRouterMiddleware();
 
 // Using next-redux-wrapper's makeStore
-export const makeStore = (initialState, options) => {
+export const makeStore = (initialState = {}, options) => {
   if (options.isServer) {
     initialState.router = initialRouterState(options.asPath);
   }
