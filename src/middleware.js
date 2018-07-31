@@ -7,7 +7,8 @@ import { CALL_ROUTER_METHOD } from './actions'
  * Router singleton. This will prevent these actions from reaching your
  * reducer or any middleware that comes after this one.
  */
-const createRouterMiddleware = ({ Router = NextRouter, methods = {} }) => {
+const createRouterMiddleware = (middlewareOpts = {}) => {
+  const { Router = NextRouter, methods = {} } = middlewareOpts
   const resolvedMethods= Object.values(routerMethods).reduce(
     (m, method) => {
       m[method] = methods[method] ? methods[method] : method

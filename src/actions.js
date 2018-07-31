@@ -37,7 +37,7 @@ const updateLocationInternal = (method) => {
  * your reducer and reissue them as the matching function on your history.
  */
 export const push = updateLocationInternal(RouterMethods.PUSH)
-export const replace = updateLocationInternal(RouterMethods.GO_BACK)
+export const replace = updateLocationInternal(RouterMethods.REPLACE)
 export const go = updateLocationInternal(RouterMethods.GO)
 export const goBack = () => go(-1)
 export const goForward = () => go(1)
