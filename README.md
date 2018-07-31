@@ -89,6 +89,10 @@ class MyApp extends App {
 }
 ```
 
+## Examples
+
+- [examples/basic](/examples/basic) - basic reference implementation
+
 ## TODO
 
 - Add unit tests
