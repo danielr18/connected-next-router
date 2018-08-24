@@ -1,6 +1,6 @@
 # Connected Next Router
 
-A Redux binding for Next.js Router compatible with Next.js 6.x.
+A Redux binding for Next.js Router compatible with Next.js ^6.1.X (Canary).
 
 ## Main features
 
