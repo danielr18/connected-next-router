@@ -6,6 +6,9 @@ module.exports = {
         modules: process.env.BABEL_ENV === 'es' ? false : 'commonjs'
       }
     ],
-    'next/babel'
+    '@babel/preset-react'
+  ],
+  plugins: [
+    '@babel/plugin-proposal-class-properties'
   ]
 }

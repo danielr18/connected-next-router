@@ -10,19 +10,20 @@ export const patchRouter = (Router, opts = {}) => {
     Router._patchedByConnectedRouter = true
 
     Router.router._unpatchedChange = Router.router.change
-    Router.router.change = async function(method, _url, _as, options, action) {
+    Router.router.change = function(method, _url, _as, options, action) {
       let as = typeof _as === 'object' ? format(_as) : _as
-      const changeResult = await Router.router._unpatchedChange(method, _url, _as, options)
-
-      if (changeResult) {
-        // TODO: Check if this is needed
-        if (__NEXT_DATA__.nextExport) {
-          as = _rewriteUrlForNextExport(as)
-        }
-        Router.router.events.emit('routeChangeCompleteWithAction', as, action)
-      }
-
-      return changeResult
+      return Router.router._unpatchedChange(method, _url, _as, options)
+        .then(changeResult => {
+          if (changeResult) {
+            // TODO: Check if this is needed
+            if (__NEXT_DATA__.nextExport) {
+              as = _rewriteUrlForNextExport(as)
+            }
+            Router.router.events.emit('routeChangeCompleteWithAction', as, action)
+          }
+    
+          return changeResult
+        })
     }
 
     Router._go = function(delta) {
