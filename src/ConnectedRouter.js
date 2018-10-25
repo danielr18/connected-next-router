@@ -1,7 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import NextRouter from 'next/router'
-import { connect } from 'react-redux'
 import { onLocationChanged } from './actions'
 import { patchRouter, unpatchRouter } from './patchRouter'
 import locationFromUrl from './utils/locationFromUrl'
@@ -18,13 +17,13 @@ const createConnectedRouter = structure => {
     static contextTypes = {
       store: PropTypes.shape({
         getState: PropTypes.func.isRequired,
+        dispatch: PropTypes.func.isRequired,
         subscribe: PropTypes.func.isRequired
       }).isRequired
     }
 
     static propTypes = {
       children: PropTypes.oneOfType([PropTypes.func, PropTypes.node]),
-      onLocationChanged: PropTypes.func.isRequired,
       shallowTimeTravel: PropTypes.bool,
       reducerKey: PropTypes.string,
       Router: PropTypes.shape()
@@ -106,10 +105,14 @@ const createConnectedRouter = structure => {
       }
     }
 
+    onLocationChanged = (newLocation, action) => {
+      this.store.dispatch(onLocationChanged(newLocation, action))
+    }
+
     listenRouteChanges = (url, action) => {
       // Dispatch onLocationChanged except when we're in time travelling
       if (!this.inTimeTravelling) {
-        this.props.onLocationChanged(locationFromUrl(url), action)
+        this.onLocationChanged(locationFromUrl(url), action)
       } else {
         this.inTimeTravelling = false
       }
@@ -120,10 +123,7 @@ const createConnectedRouter = structure => {
     }
   }
 
-  return connect(
-    null,
-    { onLocationChanged }
-  )(WithConnectedRouter)
+  return WithConnectedRouter
 }
 
 export default createConnectedRouter

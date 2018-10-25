@@ -1,6 +1,6 @@
 {
   "name": "connected-next-router",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "description": "A Redux binding for Next.js Router",
   "main": "lib/index.js",
   "author": "Daniel Reinoso <danielreinoso1807@gmail.com> (http://danielr18.github.io)",
@@ -36,7 +36,6 @@
   "peerDependencies": {
     "next": "^7.0.0",
     "react": "^16.0.0",
-    "react-redux": "^4.4.8 || ^5.0.7",
     "redux": "^3.6.0 || ^4.0.0"
   },
   "devDependencies": {
@@ -56,8 +55,7 @@
     "prop-types": "^15.5.8",
     "react": "^16.6.0",
     "react-dom": "^16.6.0",
-    "react-redux": "^5.0.7",
-    "redux": "^4.0.0"
+    "redux": "^4.0.1"
   },
   "repository": {
     "type": "git",
