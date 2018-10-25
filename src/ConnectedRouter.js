@@ -43,22 +43,26 @@ const createConnectedRouter = structure => {
 
     componentDidMount() {
       const { shallowTimeTravel, Router } = this.props
-      patchRouter(Router, { shallowTimeTravel })
-      this.unsubscribe = this.store.subscribe(this.listenStoreChanges)
-      Router.router.events.on('routeChangeStart', this.disableTimeTravel)
-      Router.router.events.on('routeChangeError', this.enableTimeTravel)
-      Router.router.events.on('routeChangeComplete', this.enableTimeTravel)
-      Router.router.events.on('routeChangeCompleteWithAction', this.listenRouteChanges)
+      Router.ready(() => {
+        patchRouter(Router, { shallowTimeTravel })
+        this.unsubscribe = this.store.subscribe(this.listenStoreChanges)
+        Router.router.events.on('routeChangeStart', this.disableTimeTravel)
+        Router.router.events.on('routeChangeError', this.enableTimeTravel)
+        Router.router.events.on('routeChangeComplete', this.enableTimeTravel)
+        Router.router.events.on('routeChangeCompleteWithAction', this.listenRouteChanges)
+      })
     }
 
     componentWillUnmount() {
       const { Router } = this.props
-      unpatchRouter(Router)
-      this.unsubscribe()
-      Router.router.events.off('routeChangeStart', this.disableTimeTravel)
-      Router.router.events.off('routeChangeError', this.enableTimeTravel)
-      Router.router.events.off('routeChangeComplete', this.enableTimeTravel)
-      Router.router.events.off('routeChangeCompleteWithAction', this.listenRouteChanges)
+      if (this.unsubscribe) {
+        unpatchRouter(Router)
+        this.unsubscribe()
+        Router.router.events.off('routeChangeStart', this.disableTimeTravel)
+        Router.router.events.off('routeChangeError', this.enableTimeTravel)
+        Router.router.events.off('routeChangeComplete', this.enableTimeTravel)
+        Router.router.events.off('routeChangeCompleteWithAction', this.listenRouteChanges)
+      }
     }
     
     enableTimeTravel = () => {
