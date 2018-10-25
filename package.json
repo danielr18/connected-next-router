@@ -40,19 +40,22 @@
     "redux": "^3.6.0 || ^4.0.0"
   },
   "devDependencies": {
-    "@babel/cli": "^7.0.0-beta.52",
-    "@babel/core": "^7.0.0-beta.52",
-    "@babel/preset-env": "^7.0.0-beta.52",
+    "@babel/cli": "^7.0.0",
+    "@babel/core": "^7.0.0",
+    "@babel/preset-env": "^7.0.0",
+    "@babel/plugin-proposal-object-rest-spread": "^7.0.0",
+    "@babel/plugin-transform-runtime": "^7.1.0",
+    "@babel/preset-react": "^7.0.0",
     "babel-core": "^7.0.0-bridge.0",
-    "babel-eslint": "^8.2.5",
+    "babel-eslint": "^10.0.1",
     "cross-env": "^5.2.0",
-    "eslint": "^5.1.0",
-    "eslint-plugin-import": "^2.2.0",
-    "eslint-plugin-react": "^7.10.0",
-    "next": "^6.1.1",
+    "eslint": "^5.7.0",
+    "eslint-plugin-import": "^2.14.0",
+    "eslint-plugin-react": "^7.11.0",
+    "next": "^7.0.2",
     "prop-types": "^15.5.8",
-    "react": "^16.0.0",
-    "react-dom": "^16.0.0",
+    "react": "^16.6.0",
+    "react-dom": "^16.6.0",
     "react-redux": "^5.0.7",
     "redux": "^4.0.0"
   },
@@ -62,6 +65,5 @@
   },
   "bugs": {
     "url": "https://github.com/danielr18/connected-next-router/issues"
-  },
-  "dependencies": {}
+  }
 }
