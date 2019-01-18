@@ -6,7 +6,7 @@ A Redux binding for Next.js Router compatible with Next.js.
 
 :sparkles: Keep Router state in sync with your Redux store.
 
-:tada: Dispatch Router methods (`push`, `replace`, `go`, `goBack`, `goForward`) using Redux actions.
+:tada: Dispatch Router methods (`push`, `replace`, `go`, `goBack`, `goForward`, `prefetch`) using Redux actions.
 
 :clock9: Support time traveling in Redux DevTools.
 
