@@ -1,7 +1,7 @@
 import React from 'react'
 import Link from 'next/link'
 import Router from 'next/router'
-import { push, replace, goBack, goForward } from '../../../es'
+import { push, replace, goBack, goForward, prefetch } from '../../../es'
 import { connect } from 'react-redux'
 
 const Navigation = props => (
@@ -91,7 +91,7 @@ const Navigation = props => (
               href="/"
               onClick={e => {
                 e.preventDefault()
-                Router.replace({ pathname: '/'})
+                Router.replace({ pathname: '/' })
               }}
             >
               Replace /
@@ -100,10 +100,24 @@ const Navigation = props => (
         </ul>
       </li>
     </ul>
+    <h2>Prefetching</h2>
+    <ul>
+      <li>
+        <a
+          href="about"
+          onClick={e => {
+            e.preventDefault()
+            props.prefetch('/about')
+          }}
+        >
+          Prefetch /about
+        </a>
+      </li>
+    </ul>
   </div>
 )
 
 export default connect(
   null,
-  { push, replace, goBack, goForward }
+  { push, replace, goBack, goForward, prefetch }
 )(Navigation)

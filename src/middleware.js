@@ -10,9 +10,9 @@ import { CALL_ROUTER_METHOD } from './actions'
 const createRouterMiddleware = (middlewareOpts = {}) => {
   const { Router = NextRouter, methods = {} } = middlewareOpts
   const resolvedMethods= Object.values(routerMethods).reduce(
-    (m, method) => {
-      m[method] = methods[method] ? methods[method] : method
-      return m
+    (acc, method) => {
+      acc[method] = methods[method] ? methods[method] : method
+      return acc
     },
     {}
   )
