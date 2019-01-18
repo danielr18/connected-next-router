@@ -9,6 +9,7 @@ export const {
   go,
   goBack,
   goForward,
+  prefetch,
   routerActions,
   ConnectedRouter,
   routerReducer,

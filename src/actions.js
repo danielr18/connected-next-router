@@ -21,7 +21,7 @@ export const onLocationChanged = (location, action) => ({
  */
 export const CALL_ROUTER_METHOD = '@@router/CALL_ROUTER_METHOD'
 
-const updateLocationInternal = (method) => {
+const callRouterActionCreator = method => {
   return (...args) => ({
     type: CALL_ROUTER_METHOD,
     payload: {
@@ -36,10 +36,11 @@ const updateLocationInternal = (method) => {
  * The associated routerMiddleware will capture these events before they get to
  * your reducer and reissue them as the matching function on your history.
  */
-export const push = updateLocationInternal(RouterMethods.PUSH)
-export const replace = updateLocationInternal(RouterMethods.REPLACE)
-export const go = updateLocationInternal(RouterMethods.GO)
+export const push = callRouterActionCreator(RouterMethods.PUSH)
+export const replace = callRouterActionCreator(RouterMethods.REPLACE)
+export const go = callRouterActionCreator(RouterMethods.GO)
+export const prefetch = callRouterActionCreator(RouterMethods.PREFETCH)
 export const goBack = () => go(-1)
 export const goForward = () => go(1)
 
-export const routerActions = { push, replace, go, goBack, goForward }
+export const routerActions = { push, replace, go, goBack, goForward, prefetch }
