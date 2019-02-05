@@ -47,6 +47,20 @@ const rootReducer = combineReducers({
 
 const routerMiddleware = createRouterMiddleware();
 
+/*
+If you use next-routes, you have to import Router from your routes.js file
+and create the router middleware as below:
+
+const routerMiddleware = createRouterMiddleware({
+  Router,
+  methods: {
+    push: 'pushRoute',
+    replace: 'replaceRoute',
+    prefetch: 'prefetchRoute',
+  },
+}),
+*/
+
 // Using next-redux-wrapper's makeStore
 export const makeStore = (initialState = {}, options) => {
   if (options.asPath) {
