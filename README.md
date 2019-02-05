@@ -47,7 +47,7 @@ const routerMiddleware = createRouterMiddleware();
 
 // Using next-redux-wrapper's makeStore
 export const makeStore = (initialState = {}, options) => {
-  if (options.isServer) {
+  if (options.asPath) {
     initialState.router = initialRouterState(options.asPath);
   }
 
