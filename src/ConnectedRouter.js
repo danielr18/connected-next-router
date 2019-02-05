@@ -1,5 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
+import { connect, ReactReduxContext } from 'react-redux'
 import NextRouter from 'next/router'
 import { onLocationChanged } from './actions'
 import { patchRouter, unpatchRouter } from './patchRouter'
@@ -13,20 +14,17 @@ const createConnectedRouter = structure => {
     * When history is changed, it dispatches an action
     * to update router state in redux store.
     */
-  class WithConnectedRouter extends React.Component {
-    static contextTypes = {
-      store: PropTypes.shape({
-        getState: PropTypes.func.isRequired,
-        dispatch: PropTypes.func.isRequired,
-        subscribe: PropTypes.func.isRequired
-      }).isRequired
-    }
-
+  class ConnectedRouter extends React.Component {
     static propTypes = {
       children: PropTypes.oneOfType([PropTypes.func, PropTypes.node]),
       shallowTimeTravel: PropTypes.bool,
       reducerKey: PropTypes.string,
-      Router: PropTypes.shape()
+      Router: PropTypes.shape(),
+      onLocationChanged: PropTypes.func.isRequired,
+      store: PropTypes.shape({
+        getState: PropTypes.func.isRequired,
+        subscribe: PropTypes.func.isRequired
+      }).isRequired
     }
 
     static defaultProps = {
@@ -35,17 +33,16 @@ const createConnectedRouter = structure => {
       Router: NextRouter
     }
 
-    constructor(props, context) {
+    constructor(props) {
       super(props)
       this.inTimeTravelling = false
-      this.store = context.store
     }
 
     componentDidMount() {
-      const { shallowTimeTravel, Router } = this.props
+      const { shallowTimeTravel, Router, store } = this.props
       Router.ready(() => {
         patchRouter(Router, { shallowTimeTravel })
-        this.unsubscribe = this.store.subscribe(this.listenStoreChanges)
+        this.unsubscribe = store.subscribe(this.listenStoreChanges)
         Router.router.events.on('routeChangeStart', this.disableTimeTravel)
         Router.router.events.on('routeChangeError', this.enableTimeTravel)
         Router.router.events.on('routeChangeComplete', this.enableTimeTravel)
@@ -64,7 +61,7 @@ const createConnectedRouter = structure => {
         Router.router.events.off('routeChangeCompleteWithAction', this.listenRouteChanges)
       }
     }
-    
+
     enableTimeTravel = () => {
       this._isTimeTravelEnabled = true
     }
@@ -85,9 +82,9 @@ const createConnectedRouter = structure => {
         return
       }
 
-      const { Router, shallowTimeTravel, reducerKey } = this.props
+      const { Router, shallowTimeTravel, reducerKey, store } = this.props
       // Extract store's location
-      const storeLocation = getIn(this.store.getState(), [reducerKey, 'location'])
+      const storeLocation = getIn(store.getState(), [reducerKey, 'location'])
       const { pathname: pathnameInStore, search: searchInStore, hash: hashInStore } = storeLocation
 
       // Extract Router's location
@@ -109,14 +106,10 @@ const createConnectedRouter = structure => {
       }
     }
 
-    onLocationChanged = (newLocation, action) => {
-      this.store.dispatch(onLocationChanged(newLocation, action))
-    }
-
     listenRouteChanges = (url, action) => {
       // Dispatch onLocationChanged except when we're in time travelling
       if (!this.inTimeTravelling) {
-        this.onLocationChanged(locationFromUrl(url), action)
+        this.props.onLocationChanged(locationFromUrl(url), action)
       } else {
         this.inTimeTravelling = false
       }
@@ -127,7 +120,25 @@ const createConnectedRouter = structure => {
     }
   }
 
-  return WithConnectedRouter
+  const ConnectedRouterWithContext = props => {
+    const Context = props.context || ReactReduxContext
+
+    if (Context == null) {
+      throw 'connected-react-router@^1.0.0 requires react-redux v6. ' +
+        'If you are using react-redux v5, install connected-react-router@^0.0.1.'
+    }
+
+    return <Context.Consumer>{({ store }) => <ConnectedRouter store={store} {...props} />}</Context.Consumer>
+  }
+
+  ConnectedRouterWithContext.propTypes = {
+    context: PropTypes.object
+  }
+
+  return connect(
+    null,
+    { onLocationChanged }
+  )(ConnectedRouterWithContext)
 }
 
 export default createConnectedRouter
