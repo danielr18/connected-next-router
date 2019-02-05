@@ -1,4 +1,4 @@
-> v1.0.0 requires React v16.4.0 and React Redux v6.0 or later. If you are using React Redux v5, check out [v0 branch](/danielr18/connected-next-router/tree/v0).
+> v1.0.0 requires React v16.4.0 and React Redux v6.0 or later. If you are using React Redux v5, check out [v0 branch](https://github.com/danielr18/connected-next-router/tree/v0).
 
 # Connected Next Router
 
