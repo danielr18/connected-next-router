@@ -13,10 +13,10 @@ const rootReducer = combineReducers({
   router: routerReducer
 })
 
-export const configureStore = (initialState = {}, { isServer, asPath }) => {
+export const configureStore = (initialState = {}, { asPath }) => {
   const routerMiddleware = createRouterMiddleware()
 
-  if (isServer) {
+  if (asPath) {
     initialState.router = initialRouterState(asPath)
   }
 
