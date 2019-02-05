@@ -1,7 +1,7 @@
 import React from 'react'
 import Link from 'next/link'
 import Router from 'next/router'
-import { push, replace, goBack, goForward, prefetch } from '../../../es'
+import { push, replace, goBack, goForward, prefetch } from 'connected-next-router'
 import { connect } from 'react-redux'
 
 const Navigation = props => (
