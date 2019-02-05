@@ -58,7 +58,7 @@ const routerMiddleware = createRouterMiddleware({
     replace: 'replaceRoute',
     prefetch: 'prefetchRoute',
   },
-}),
+});
 */
 
 // Using next-redux-wrapper's makeStore
