@@ -8,6 +8,7 @@ const externalsRegExp = /(connected-next-router)(?!.*node_modules)/
 module.exports = {
   webpack(config) {
     config.resolve.alias = {
+      ...config.resolve.alias,
       react: path.resolve(__dirname, 'node_modules/react'),
       'react-dom': path.resolve(__dirname, 'node_modules/react-dom'),
       'react-redux': path.resolve(__dirname, 'node_modules/react-redux'),
