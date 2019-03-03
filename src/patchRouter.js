@@ -16,7 +16,7 @@ export const patchRouter = (Router, opts = {}) => {
         .then(changeResult => {
           if (changeResult) {
             // TODO: Check if this is needed
-            if (__NEXT_DATA__.nextExport) {
+            if (__NEXT_DATA__.nextExport && "function" === typeof _rewriteUrlForNextExport) {
               as = _rewriteUrlForNextExport(as)
             }
             Router.router.events.emit('routeChangeCompleteWithAction', as, action)
