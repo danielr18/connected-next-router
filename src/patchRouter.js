@@ -1,6 +1,5 @@
 /* global __NEXT_DATA__ */
-
-import { _rewriteUrlForNextExport } from 'next/router'
+import rewriteUrlForNextExport from './utils/rewriteUrlForNextExport'
 import { parse, format } from 'url'
 
 export const patchRouter = (Router, opts = {}) => {
@@ -8,16 +7,14 @@ export const patchRouter = (Router, opts = {}) => {
   if (Router.router && !Router._patchedByConnectedRouter) {
     const { shallowTimeTravel } = opts
     Router._patchedByConnectedRouter = true
-
     Router.router._unpatchedChange = Router.router.change
     Router.router.change = function(method, _url, _as, options, action) {
       let as = typeof _as === 'object' ? format(_as) : _as
       return Router.router._unpatchedChange(method, _url, _as, options)
         .then(changeResult => {
           if (changeResult) {
-            // TODO: Check if this is needed
             if (__NEXT_DATA__.nextExport) {
-              as = _rewriteUrlForNextExport(as)
+              as = rewriteUrlForNextExport(as)
             }
             Router.router.events.emit('routeChangeCompleteWithAction', as, action)
           }
