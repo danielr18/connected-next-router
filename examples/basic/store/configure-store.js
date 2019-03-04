@@ -1,13 +1,13 @@
 import { createStore, applyMiddleware, combineReducers } from 'redux'
-import { createRouterMiddleware, initialRouterState, routerReducer } from '../../../es'
+import { createRouterMiddleware, initialRouterState, routerReducer } from 'connected-next-router'
 
 const bindMiddleware = middleware => {
   if (process.env.NODE_ENV !== 'production') {
-    const { composeWithDevTools } = require('redux-devtools-extension');
-    return composeWithDevTools(applyMiddleware(...middleware));
+    const { composeWithDevTools } = require('redux-devtools-extension')
+    return composeWithDevTools(applyMiddleware(...middleware))
   }
-  return applyMiddleware(...middleware);
-};
+  return applyMiddleware(...middleware)
+}
 
 const rootReducer = combineReducers({
   router: routerReducer

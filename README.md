@@ -1,3 +1,5 @@
+> v1.0.0 requires React v16.4.0 and React Redux v6.0 or later. If you are using React Redux v5, check out [v0 branch](https://github.com/danielr18/connected-next-router/tree/v0).
+
 # Connected Next Router
 
 A Redux binding for Next.js Router compatible with Next.js.
@@ -48,6 +50,7 @@ const routerMiddleware = createRouterMiddleware();
 /*
 If you use next-routes, you have to import Router from your routes.js file
 and create the router middleware as below:
+
 const routerMiddleware = createRouterMiddleware({
   Router,
   methods: {
