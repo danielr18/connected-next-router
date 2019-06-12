@@ -37,12 +37,20 @@ export const patchRouter = (Router, opts = {}) => {
       return Router.router.change('pushState', url, as, options, 'PUSH')
     }
 
-    Router.router._unpatchedBeforePopStateCallback = Router.router._beforePopState
+    // Keep Router.router._beforePopState for backward compatibility (< Next.js 8)
+    Router.router._unpatchedBpsCallback = Router.router._bps || Router.router._beforePopState
     Router.beforePopState(function({ url, as, options }) {
       Router.router.change('replaceState', url, as, options, 'POP')
-      Router.router._unpatchedBeforePopStateCallback(...arguments)
+      if (Router.router._unpatchedBpsCallback) {
+        Router.router._unpatchedBpsCallback(...arguments)
+      }
       return false
     })
+  
+    Router._unpatchedBeforePopState = Router.beforePopState
+    Router.beforePopState = function(cb) {
+      Router.router._unpatchedBpsCallback = cb
+    }
 
     if (shallowTimeTravel) {
       Router._timeTravelChange = timeTravelChange.bind(Router.router)
@@ -57,7 +65,11 @@ export const unpatchRouter = (Router) => {
     Router.router.change = Router.router._unpatchedChange
     Router.router.replace = Router.router._unpatchedReplace
     Router.router.push = Router.router._unpatchedPush
-    Router.router._beforePopState = Router.router._unpatchedBeforePopStateCallback
+    Router.beforePopState = Router._unpatchedBeforePopState
+    if (Router.router._unpatchedBpsCallback) {
+      Router.beforePopState(Router.router._unpatchedBpsCallback)
+    }
+    Router.router._unpatchedBpsCallback = undefined
     Router._timeTravelChange = undefined
     Router._go = undefined
     Router._patchedByConnectedRouter = false
