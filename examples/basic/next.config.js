@@ -16,11 +16,13 @@ module.exports = {
       next: path.resolve(__dirname, 'node_modules/next')
     }
 
-    config.externals = config.externals.map(external => {
-      if (typeof external !== 'function') return external
-      return (ctx, req, cb) => (externalsRegExp.test(req) ? cb() : external(ctx, req, cb))
-    })
-
+    if(Array.isArray(config.externals)) {
+      config.externals = config.externals.map(external => {
+        if (typeof external !== 'function') return external
+        return (ctx, req, cb) => (externalsRegExp.test(req) ? cb() : external(ctx, req, cb))
+      })
+    }
+    
     return config
   }
 }
