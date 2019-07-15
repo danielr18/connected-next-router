@@ -1,17 +1,13 @@
-import { parse, format } from 'url'
+import { parse } from 'url'
+import { LocationState } from '../types'
 
-export type LocationState = {
-  pathname?: string;
-  hash?: string;
-  search?: string;
-}
-
-const locationFromUrl = (url: string): LocationState => {
-  const { hash, search, pathname } = parse(url);
+const locationFromUrl = (url: string, as: string = url): LocationState => {
+  const { hash, search, pathname } = parse(as)
   return {
-    pathname,
+    href: url || '',
+    pathname: pathname || '',
     search: search || '',
-    hash: hash || '',
+    hash: hash || ''
   }
 }
 

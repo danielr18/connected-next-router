@@ -1,12 +1,10 @@
 import getIn from './getIn'
-import setIn from './setIn'
+import { Structure } from '../../types'
 
-const structure = {
+const structure: Structure = {
   fromJS: value => value,
   getIn,
-  merge: (state, payload) => ({ ...state, ...payload }),
-  toJS: value => value,
-  setIn
+  merge: (state, payload) => ({ ...state, ...payload })
 }
 
 export default structure

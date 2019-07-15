@@ -1,4 +1,5 @@
-import * as RouterMethods from './routerMethods'
+import { RouterMethod, PUSH, REPLACE, GO, PREFETCH } from './routerMethods'
+import { LocationState, RouterState, RouterAction } from './types'
 
 /**
  * This action type will be dispatched after Router's history
@@ -6,7 +7,12 @@ import * as RouterMethods from './routerMethods'
  */
 export const LOCATION_CHANGE = '@@router/LOCATION_CHANGE'
 
-export const onLocationChanged = (location, action) => ({
+export type LocationChangeAction = {
+  type: typeof LOCATION_CHANGE;
+  payload: RouterState;
+}
+
+export const onLocationChanged = (location: LocationState, action: RouterAction): LocationChangeAction => ({
   type: LOCATION_CHANGE,
   payload: {
     location,
@@ -21,8 +27,16 @@ export const onLocationChanged = (location, action) => ({
  */
 export const CALL_ROUTER_METHOD = '@@router/CALL_ROUTER_METHOD'
 
-const callRouterActionCreator = method => {
-  return (...args) => ({
+export type CallRouterMethodAction = {
+  type: typeof CALL_ROUTER_METHOD;
+  payload: {
+    method: RouterMethod;
+    args: unknown[];
+  };
+}
+
+const callRouterActionCreator = (method: RouterMethod) => {
+  return (...args: unknown[]): CallRouterMethodAction => ({
     type: CALL_ROUTER_METHOD,
     payload: {
       method,
@@ -36,11 +50,11 @@ const callRouterActionCreator = method => {
  * The associated routerMiddleware will capture these events before they get to
  * your reducer and reissue them as the matching function on your history.
  */
-export const push = callRouterActionCreator(RouterMethods.PUSH)
-export const replace = callRouterActionCreator(RouterMethods.REPLACE)
-export const go = callRouterActionCreator(RouterMethods.GO)
-export const prefetch = callRouterActionCreator(RouterMethods.PREFETCH)
-export const goBack = () => go(-1)
-export const goForward = () => go(1)
+export const push = callRouterActionCreator(PUSH)
+export const replace = callRouterActionCreator(REPLACE)
+export const go = callRouterActionCreator(GO)
+export const prefetch = callRouterActionCreator(PREFETCH)
+export const goBack = (): CallRouterMethodAction => go(-1)
+export const goForward = (): CallRouterMethodAction => go(1)
 
 export const routerActions = { push, replace, go, goBack, goForward, prefetch }

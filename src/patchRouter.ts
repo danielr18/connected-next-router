@@ -1,96 +1,83 @@
 /* global __NEXT_DATA__ */
+
 import rewriteUrlForNextExport from './utils/rewriteUrlForNextExport'
-import { parse, format } from 'url'
+import { UrlObject } from 'url'
+import { RouterAction, BeforePopStateCallback } from './types'
+import { formatWithValidation } from 'next-server/dist/lib/utils'
+import { SingletonRouter } from 'next/router'
 
-export const patchRouter = (Router, opts = {}) => {
+type Url = UrlObject | string
 
-  if (Router.router && !Router._patchedByConnectedRouter) {
-    const { shallowTimeTravel } = opts
-    Router._patchedByConnectedRouter = true
-    Router.router._unpatchedChange = Router.router.change
-    Router.router.change = function(method, _url, _as, options, action) {
-      let as = typeof _as === 'object' ? format(_as) : _as
-      return Router.router._unpatchedChange(method, _url, _as, options)
-        .then(changeResult => {
-          if (changeResult) {
-            if (__NEXT_DATA__.nextExport) {
-              as = rewriteUrlForNextExport(as)
-            }
-            Router.router.events.emit('routeChangeCompleteWithAction', as, action)
-          }
-    
-          return changeResult
-        })
+export type PatchRouterOptions = {
+  exportTrailingSlash?: boolean;
+}
+
+const patchRouter = (Router: SingletonRouter, opts: PatchRouterOptions = {}): (() => void) => {
+  const { exportTrailingSlash = false } = opts
+
+  if (!Router.router) {
+    return () => {}
+  }
+
+  function change(method: string, _url: Url, _as: Url, options: any, action: RouterAction): Promise<boolean> {
+    const url = typeof _url === 'object' ? formatWithValidation(_url) : _url
+    let as = typeof _as === 'object' ? formatWithValidation(_as) : _as
+    if (!Router.router) {
+      return Promise.resolve(false)
     }
-
-    Router._go = function(delta) {
-      window.history.go(delta)
-    }
-
-    Router.router._unpatchedReplace = Router.router.replace
-    Router.router.replace = function(url, as = url, options = {}) {
-      return Router.router.change('replaceState', url, as, options, 'REPLACE')
-    }
-
-    Router.router._unpatchedPush = Router.router.push
-    Router.router.push = function(url, as = url, options = {}) {
-      return Router.router.change('pushState', url, as, options, 'PUSH')
-    }
-
-    // Keep Router.router._beforePopState for backward compatibility (< Next.js 8)
-    Router.router._unpatchedBpsCallback = Router.router._bps || Router.router._beforePopState
-    Router.beforePopState(function({ url, as, options }) {
-      Router.router.change('replaceState', url, as, options, 'POP')
-      if (Router.router._unpatchedBpsCallback) {
-        Router.router._unpatchedBpsCallback(...arguments)
+    return Router.router.change(method, _url, _as, options).then((changeResult: boolean) => {
+      if (changeResult) {
+        // @ts-ignore this is temporarily global (attached to window)
+        if (exportTrailingSlash && __NEXT_DATA__.nextExport) {
+          as = rewriteUrlForNextExport(as)
+        }
+        if (Router.router) {
+          Router.router.events.emit('connectedRouteChangeComplete', url, as, action)
+        }
       }
-      return false
+
+      return changeResult
     })
-  
-    Router._unpatchedBeforePopState = Router.beforePopState
-    Router.beforePopState = function(cb) {
-      Router.router._unpatchedBpsCallback = cb
-    }
+  }
 
-    if (shallowTimeTravel) {
-      Router._timeTravelChange = timeTravelChange.bind(Router.router)
-    } else {
-      Router._timeTravelChange = url => Router.router.replace(url)
+  const unpatchedMethods = {
+    replace: Router.router.replace,
+    push: Router.router.push,
+    bpsCallback: Router.router._bps,
+    beforePopState: Router.beforePopState
+  }
+
+  Router.router.replace = function(url: Url, as: Url = url, options: any = {}) {
+    return change('replaceState', url, as, options, 'REPLACE')
+  }
+
+  Router.router.push = function(url: Url, as: Url = url, options: any = {}) {
+    return change('pushState', url, as, options, 'PUSH')
+  }
+
+  Router.beforePopState(function(state): boolean {
+    const { url, as, options } = state
+    change('replaceState', url, as, options, 'POP')
+    if (unpatchedMethods.bpsCallback) {
+      unpatchedMethods.bpsCallback(state)
+    }
+    return false
+  })
+
+  Router.beforePopState = function(cb: BeforePopStateCallback) {
+    unpatchedMethods.bpsCallback = cb
+  }
+
+  return () => {
+    if (Router.router) {
+      Router.router.replace = unpatchedMethods.replace
+      Router.router.push = unpatchedMethods.push
+      Router.beforePopState = unpatchedMethods.beforePopState
+      if (unpatchedMethods.bpsCallback) {
+        Router.beforePopState(unpatchedMethods.bpsCallback)
+      }
     }
   }
 }
 
-export const unpatchRouter = (Router) => {
-  if (Router._patchedByConnectedRouter) {
-    Router.router.change = Router.router._unpatchedChange
-    Router.router.replace = Router.router._unpatchedReplace
-    Router.router.push = Router.router._unpatchedPush
-    Router.beforePopState = Router._unpatchedBeforePopState
-    if (Router.router._unpatchedBpsCallback) {
-      Router.beforePopState(Router.router._unpatchedBpsCallback)
-    }
-    Router.router._unpatchedBpsCallback = undefined
-    Router._timeTravelChange = undefined
-    Router._go = undefined
-    Router._patchedByConnectedRouter = false
-  }
-}
-
-function toRoute(path) {
-  return path.replace(/\/$/, '') || '/'
-}
-
-function timeTravelChange(url, as = url) {
-  if (this.onlyAHashChange(url)) {
-    this.changeState('replaceState', url, as)
-    this.scrollToHash(as)
-    return true
-  }
-
-  const { pathname, query, hash } = parse(url, true)
-  const route = toRoute(pathname)
-  const routeInfo = this.components[route]
-  this.changeState('replaceState', url, as)
-  this.set(route, pathname, query, as, { ...routeInfo, hash: hash ? hash : '' })
-  return true
-}
+export default patchRouter

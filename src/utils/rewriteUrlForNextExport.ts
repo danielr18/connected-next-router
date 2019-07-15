@@ -1,25 +1,12 @@
-function rewriteUrlForNextExport(url) {
-  const [, hash] = url.split('#')
-  url = url.replace(/#.*/, '')
-
-  let [path, qs] = url.split('?')
+function rewriteUrlForNextExport(url: string): string {
+  const [pathname, hash] = url.split('#')
+  let [path, qs] = pathname.split('?')
   path = path.replace(/\/$/, '')
-
-  let newPath = path
   // Append a trailing slash if this path does not have an extension
-  if (!/\.[^/]+\/?$/.test(path)) {
-    newPath = `${path}/`
-  }
-
-  if (qs) {
-    newPath = `${newPath}?${qs}`
-  }
-
-  if (hash) {
-    newPath = `${newPath}#${hash}`
-  }
-
-  return newPath
+  if (!/\.[^/]+\/?$/.test(path)) path += '/'
+  if (qs) path += '?' + qs
+  if (hash) path += '#' + hash
+  return path
 }
 
 export default rewriteUrlForNextExport

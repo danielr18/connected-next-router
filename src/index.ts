@@ -1,19 +1,35 @@
-import createAll from './utils/createAll'
 import plainStructure from './structure/plain'
-
-export const {
+import {
   LOCATION_CHANGE,
   CALL_ROUTER_METHOD,
+  routerActions,
   push,
   replace,
   go,
   goBack,
   goForward,
-  prefetch,
-  routerActions,
-  ConnectedRouter,
-  routerReducer,
+  prefetch
+} from './actions'
+import routerMethods from './routerMethods'
+import createConnectedRouter from './ConnectedRouter'
+import createRouterReducer from './reducer'
+import createRouterMiddleware from './middleware'
+import createInitialRouterState from './utils/createInitialRouterState'
+
+export {
+  routerMethods,
   createRouterMiddleware,
-  initialRouterState,
-  routerMethods
-} = createAll(plainStructure)
+  LOCATION_CHANGE,
+  CALL_ROUTER_METHOD,
+  routerActions,
+  push,
+  replace,
+  go,
+  goBack,
+  goForward,
+  prefetch
+}
+
+export const initialRouterState = createInitialRouterState(plainStructure)
+export const routerReducer = createRouterReducer(plainStructure)
+export const ConnectedRouter = createConnectedRouter(plainStructure)
