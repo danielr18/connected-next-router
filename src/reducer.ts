@@ -1,8 +1,9 @@
 import { LOCATION_CHANGE, LocationChangeAction } from './actions'
 import createInitialRouterState from './utils/createInitialRouterState'
 import { RouterState, Structure } from './types'
+import { Reducer } from 'redux'
 
-type CreateRouterReducer = (structure: Structure) => (state: RouterState, action: LocationChangeAction) => RouterState
+type CreateRouterReducer = (structure: Structure) => Reducer<RouterState, LocationChangeAction>
 
 const createRouterReducer: CreateRouterReducer = structure => {
   const { merge } = structure
