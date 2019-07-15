@@ -3,7 +3,7 @@
 import rewriteUrlForNextExport from './utils/rewriteUrlForNextExport'
 import { UrlObject } from 'url'
 import { RouterAction, BeforePopStateCallback } from './types'
-import { formatWithValidation } from 'next-server/dist/lib/utils'
+import formatWithValidation from './utils/formatWithValidation'
 import { SingletonRouter } from 'next/router'
 
 type Url = UrlObject | string
