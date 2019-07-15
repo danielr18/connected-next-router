@@ -4,7 +4,15 @@ import Router from 'next/router'
 import { push, replace, goBack, goForward, prefetch } from 'connected-next-router'
 import { connect } from 'react-redux'
 
-const Navigation = props => (
+type DispatchProps = {
+  push: (...args: unknown[]) => void;
+  replace: (...args: unknown[]) => void;
+  prefetch: (...args: unknown[]) => void;
+  goBack: () => void;
+  goForward: () => void;
+}
+
+const Navigation = (props: DispatchProps) => (
   <div>
     <h2>Navigation</h2>
     <ul>
@@ -107,7 +115,7 @@ const Navigation = props => (
               href="/blog/1"
               onClick={e => {
                 e.preventDefault()
-                Router.push('/blog?postId=1', '/blog/1')
+                Router.push('/blog/[postId]', '/blog/1')
               }}
             >
               Push /blog/1
