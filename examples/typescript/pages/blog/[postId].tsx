@@ -1,19 +1,18 @@
 import React from 'react'
 import Navigation from '../../components/navigation'
-import { connect } from 'react-redux'
-import { State } from '../../typings';
-import { RouterState } from 'connected-next-router/types'
+import { useSelector } from 'react-redux'
+import { State } from '../../typings'
 
-type BlogProps = {
-  routerState: RouterState;
+const Blog = () => {
+  const routerState = useSelector((state: State) => state.router)
+  return (
+    <div>
+      <h1>Blog</h1>
+      <pre>{JSON.stringify(routerState)}</pre>
+      <Navigation />
+    </div>
+  )
 }
 
-const Blog = ({ routerState }: BlogProps) => (
-  <div>
-    <h1>Blog</h1>
-    <pre>{JSON.stringify(routerState)}</pre>
-    <Navigation />
-  </div>
-)
+export default Blog
 
-export default connect((state: State) => ({ routerState: state.router }))(Blog)
