@@ -34,7 +34,7 @@ export type CallRouterMethodPushPayload = {
   type: typeof CALL_ROUTER_METHOD;
   payload: {
     method: typeof PUSH;
-    args: [Url, Url, any];
+    args: [Url, Url?, any?];
   };
 }
 
@@ -42,7 +42,7 @@ export type CallRouterMethodReplacePayload = {
   type: typeof CALL_ROUTER_METHOD;
   payload: {
     method: typeof REPLACE;
-    args: [Url, Url, any];
+    args: [Url, Url?, any?];
   };
 }
 
@@ -73,7 +73,7 @@ export type CallRouterMethodAction =
  * The associated routerMiddleware will capture these events before they get to
  * your reducer and reissue them as the matching function on your history.
  */
-export const push = (url: Url, as: Url, options: any): CallRouterMethodPushPayload => ({
+export const push = (url: Url, as?: Url, options?: any): CallRouterMethodPushPayload => ({
   type: CALL_ROUTER_METHOD,
   payload: {
     method: PUSH,
@@ -81,7 +81,7 @@ export const push = (url: Url, as: Url, options: any): CallRouterMethodPushPaylo
   }
 })
 
-export const replace = (url: Url, as: Url, options: any): CallRouterMethodReplacePayload => ({
+export const replace = (url: Url, as?: Url, options?: any): CallRouterMethodReplacePayload => ({
   type: CALL_ROUTER_METHOD,
   payload: {
     method: REPLACE,
