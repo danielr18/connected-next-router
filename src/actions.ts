@@ -1,5 +1,8 @@
-import { RouterMethod, PUSH, REPLACE, GO, PREFETCH } from './routerMethods'
+import { UrlObject } from 'url'
+import { PUSH, REPLACE, GO, PREFETCH } from './routerMethods'
 import { LocationState, RouterState, RouterAction } from './types'
+
+type Url = UrlObject | string
 
 /**
  * This action type will be dispatched after Router's history
@@ -27,34 +30,82 @@ export const onLocationChanged = (location: LocationState, action: RouterAction)
  */
 export const CALL_ROUTER_METHOD = '@@router/CALL_ROUTER_METHOD'
 
-export type CallRouterMethodAction = {
+export type CallRouterMethodPushPayload = {
   type: typeof CALL_ROUTER_METHOD;
   payload: {
-    method: RouterMethod;
-    args: unknown[];
+    method: typeof PUSH;
+    args: [Url, Url, any];
   };
 }
 
-const callRouterActionCreator = (method: RouterMethod) => {
-  return (...args: unknown[]): CallRouterMethodAction => ({
-    type: CALL_ROUTER_METHOD,
-    payload: {
-      method,
-      args
-    }
-  })
+export type CallRouterMethodReplacePayload = {
+  type: typeof CALL_ROUTER_METHOD;
+  payload: {
+    method: typeof REPLACE;
+    args: [Url, Url, any];
+  };
 }
+
+export type CallRouterMethodGoPayload = {
+  type: typeof CALL_ROUTER_METHOD;
+  payload: {
+    method: typeof GO;
+    args: [number];
+  };
+}
+
+export type CallRouterMethodPrefetchPayload = {
+  type: typeof CALL_ROUTER_METHOD;
+  payload: {
+    method: typeof PREFETCH;
+    args: [string];
+  };
+}
+
+export type CallRouterMethodAction =
+  | CallRouterMethodPushPayload
+  | CallRouterMethodReplacePayload
+  | CallRouterMethodGoPayload
+  | CallRouterMethodPrefetchPayload
 
 /**
  * These actions correspond to the history API.
  * The associated routerMiddleware will capture these events before they get to
  * your reducer and reissue them as the matching function on your history.
  */
-export const push = callRouterActionCreator(PUSH)
-export const replace = callRouterActionCreator(REPLACE)
-export const go = callRouterActionCreator(GO)
-export const prefetch = callRouterActionCreator(PREFETCH)
-export const goBack = (): CallRouterMethodAction => go(-1)
-export const goForward = (): CallRouterMethodAction => go(1)
+export const push = (url: Url, as: Url, options: any): CallRouterMethodPushPayload => ({
+  type: CALL_ROUTER_METHOD,
+  payload: {
+    method: PUSH,
+    args: [url, as, options]
+  }
+})
+
+export const replace = (url: Url, as: Url, options: any): CallRouterMethodReplacePayload => ({
+  type: CALL_ROUTER_METHOD,
+  payload: {
+    method: REPLACE,
+    args: [url, as, options]
+  }
+})
+
+export const go = (number: number): CallRouterMethodGoPayload => ({
+  type: CALL_ROUTER_METHOD,
+  payload: {
+    method: GO,
+    args: [number]
+  }
+})
+
+export const prefetch = (url: string): CallRouterMethodPrefetchPayload => ({
+  type: CALL_ROUTER_METHOD,
+  payload: {
+    method: PREFETCH,
+    args: [url]
+  }
+})
+
+export const goBack = (): CallRouterMethodGoPayload => go(-1)
+export const goForward = (): CallRouterMethodGoPayload => go(1)
 
 export const routerActions = { push, replace, go, goBack, goForward, prefetch }
