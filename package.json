@@ -47,7 +47,7 @@
   "peerDependencies": {
     "next": "^9.0.0",
     "react": "^16.8.0",
-    "react-redux": "^6.0.0 || ^7.0.0",
+    "react-redux": "^7.1.0",
     "redux": "^3.6.0 || ^4.0.0"
   },
   "devDependencies": {
@@ -65,7 +65,7 @@
     "prop-types": "^15.5.8",
     "react": "^16.8.0",
     "react-dom": "^16.8.0",
-    "react-redux": "^6.0.0",
+    "react-redux": "^7.1.0",
     "redux": "^4.0.1",
     "tslib": "^1.10.0",
     "typescript": "^3.5.3"
