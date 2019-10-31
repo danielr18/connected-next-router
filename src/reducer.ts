@@ -1,7 +1,11 @@
-import { LOCATION_CHANGE } from './actions'
+import { LOCATION_CHANGE, LocationChangeAction } from './actions'
 import createInitialRouterState from './utils/createInitialRouterState'
+import { RouterState, Structure } from './types'
+import { Reducer } from 'redux'
 
-const createRouterReducer = structure => {
+type CreateRouterReducer = (structure: Structure) => Reducer<RouterState, LocationChangeAction>
+
+const createRouterReducer: CreateRouterReducer = structure => {
   const { merge } = structure
   const initialRouterState = createInitialRouterState(structure)
   const initialState = initialRouterState()
@@ -12,17 +16,15 @@ const createRouterReducer = structure => {
    * if you have use getInitialProps, so reading from and relying on
    * this state is discouraged.
    */
-  const routerReducer = (state = initialState, { type, payload } = {}) => {
-    switch (type) {
+  return function routerReducer(state = initialState, action) {
+    switch (action.type) {
       case LOCATION_CHANGE: {
-        return merge(state, payload)
+        return merge(state, action.payload)
       }
       default:
         return state
     }
   }
-
-  return routerReducer
 }
 
 export default createRouterReducer

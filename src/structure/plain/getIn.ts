@@ -1,6 +1,6 @@
 /* Code from github.com/erikras/redux-form by Erik Rasmussen */
-
-const getIn = (state, path) => {
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const getIn = (state: Record<string, any>, path: string[]): unknown => {
   if (!state) {
     return state
   }

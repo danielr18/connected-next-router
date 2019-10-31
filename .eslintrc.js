@@ -1,28 +1,35 @@
 module.exports = {
-  parser: "babel-eslint",
+  parser: '@typescript-eslint/parser',
   env: {
     browser: true,
-    node: true
+    node: true,
+    es6: true
   },
-  plugins: ["import", "react"],
+  plugins: ['react', 'react-hooks', '@typescript-eslint'],
   settings: {
-    'import/resolver': {
-      node: {
-        moduleDirectory: ['node_modules', __dirname],
-      },
-    },
     react: {
-      version: '16.6',
-    },
+      version: '16.8'
+    }
   },
-  extends: [
-    "eslint:recommended",
-    "plugin:import/errors",
-    "plugin:react/recommended"
-  ],
+  extends: ['eslint:recommended', 'plugin:react/recommended', 'plugin:@typescript-eslint/recommended'],
   rules: {
-    "max-len": ["error", { code: 120 }],
-    quotes: [2, "single", "avoid-escape"],
-    semi: [2, "never"]
+    '@typescript-eslint/indent': ['error', 2],
+    'max-len': ['error', { code: 120 }],
+    quotes: [2, 'single', 'avoid-escape'],
+    semi: [2, 'never'],
+    'react-hooks/rules-of-hooks': 'error',
+    'react-hooks/exhaustive-deps': 'error',
+    '@typescript-eslint/consistent-type-definitions': ['error', 'type'],
+    '@typescript-eslint/prefer-interface': 'off',
+    '@typescript-eslint/no-explicit-any': 'off',
+    '@typescript-eslint/explicit-function-return-type': 'off',
+    "@typescript-eslint/explicit-function-return-type": [
+      "error",
+      {
+        "allowExpressions": true,
+        "allowHigherOrderFunctions": true,
+        "allowTypedFunctionExpressions": true
+      }
+    ],
   }
-};
+}
