@@ -13,7 +13,7 @@
   "dependencies": {
     "cross-env": "^5.2.0",
     "next": "^9.0.1",
-    "next-redux-wrapper": "^3.0.0-alpha.0",
+    "next-redux-wrapper": "^4.0.0",
     "prop-types": "^15.6.2",
     "react": "^16.8.0",
     "react-dom": "^16.8.0",
