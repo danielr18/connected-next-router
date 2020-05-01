@@ -8,7 +8,9 @@
     "postupdate": "npm link ../../",
     "dev": "next dev",
     "build": "next build",
-    "start": "cross-env NODE_ENV=production next start"
+    "start": "cross-env NODE_ENV=production next start",
+    "snyk-protect": "snyk protect",
+    "prepare": "npm run snyk-protect"
   },
   "dependencies": {
     "cross-env": "^5.2.0",
@@ -19,7 +21,9 @@
     "react-dom": "^16.6.0",
     "react-redux": "^6.0.0",
     "redux": "^4.0.0",
-    "redux-devtools-extension": "^2.13.5"
+    "redux-devtools-extension": "^2.13.5",
+    "snyk": "^1.316.1"
   },
-  "devDependencies": {}
+  "devDependencies": {},
+  "snyk": true
 }
