@@ -3,6 +3,7 @@ import { createRouterMiddleware, initialRouterState, routerReducer } from 'conne
 import { format } from 'url'
 import { Middleware, Reducer } from 'redux'
 import { MakeStore, HYDRATE, createWrapper } from 'next-redux-wrapper'
+import Router from 'next/router'
 import { AppContext } from 'next/app'
 import { State } from '../typings'
 
@@ -21,7 +22,10 @@ const reducer: Reducer<State, AnyAction> = (state, action) => {
       ...state, // use previous state
       ...action.payload, // apply delta from hydration
     }
-    if (state?.router) nextState.router = state.router // preserve router value on client side navigation
+    if (typeof window !== 'undefined' && state?.router) {
+      // preserve router value on client side navigation
+      nextState.router = state.router 
+    }
     return nextState
   } else {
     return combinedReducer(state, action)
@@ -30,7 +34,7 @@ const reducer: Reducer<State, AnyAction> = (state, action) => {
 
 export const initStore: MakeStore<State> = (context) => {
   const routerMiddleware = createRouterMiddleware()
-  const { asPath, pathname, query } = ((context as AppContext).ctx || context)
+  const { asPath, pathname, query } = (context as AppContext).ctx || Router.router || {};
   let initialState
   if (asPath) {
     const url = format({ pathname, query })

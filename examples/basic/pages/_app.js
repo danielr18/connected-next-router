@@ -1,21 +1,17 @@
 import App from 'next/app'
 import React from 'react'
-import { Provider } from 'react-redux'
-import withRedux from 'next-redux-wrapper'
 import { ConnectedRouter } from 'connected-next-router'
-import { configureStore } from '../store/configure-store'
+import { wrapper } from '../store/configure-store'
 
 class ExampleApp extends App {
   render() {
-    const { Component, pageProps, store } = this.props
+    const { Component, pageProps } = this.props
     return (
-      <Provider store={store}>
-        <ConnectedRouter>
-          <Component {...pageProps} />
-        </ConnectedRouter>
-      </Provider>
+      <ConnectedRouter>
+        <Component {...pageProps} />
+      </ConnectedRouter>
     )
   }
 }
 
-export default withRedux(configureStore)(ExampleApp)
+export default wrapper.withRedux(ExampleApp)

@@ -4,22 +4,18 @@
   "description": "S",
   "license": "MIT",
   "scripts": {
-    "postinstall": "npm link ../../",
-    "postupdate": "npm link ../../",
-    "dev": "next dev",
-    "build": "next build",
-    "start": "cross-env NODE_ENV=production next start"
+    "dev": "./node_modules/next/dist/bin/next",
+    "build": "./node_modules/next/dist/bin/next build",
+    "start": "./node_modules/next/dist/bin/next start"
   },
   "dependencies": {
-    "cross-env": "^5.2.0",
-    "next": "^9.0.1",
-    "next-redux-wrapper": "^4.0.0",
-    "prop-types": "^15.6.2",
-    "react": "^16.8.0",
-    "react-dom": "^16.8.0",
-    "react-redux": "^7.1.0",
-    "redux": "^4.0.0",
-    "redux-devtools-extension": "^2.13.5"
-  },
-  "devDependencies": {}
+    "connected-next-router": "link:../../",
+    "next": "link:../../node_modules/next",
+    "next-redux-wrapper": "^6.0.0",
+    "react": "link:../../node_modules/react",
+    "react-dom": "link:../../node_modules/react-dom",
+    "react-redux": "link:../../node_modules/react-redux",
+    "redux": "link:../../node_modules/redux",
+    "redux-devtools-extension": "^2.13.8"
+  }
 }

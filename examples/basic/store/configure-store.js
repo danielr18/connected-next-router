@@ -1,24 +1,45 @@
 import { createStore, applyMiddleware, combineReducers } from 'redux'
 import { createRouterMiddleware, initialRouterState, routerReducer } from 'connected-next-router'
-import { format } from 'url';
+import { format } from 'url'
+import { HYDRATE, createWrapper } from 'next-redux-wrapper'
+import Router from 'next/router'
 
-const bindMiddleware = middleware => {
+const bindMiddleware = (middleware) => {
   const { composeWithDevTools } = require('redux-devtools-extension')
   return composeWithDevTools(applyMiddleware(...middleware))
 }
 
-const rootReducer = combineReducers({
-  router: routerReducer
+const combinedReducer = combineReducers({
+  router: routerReducer,
 })
 
-export const configureStore = (initialState = {}, { asPath, pathname, query }) => {
-  const routerMiddleware = createRouterMiddleware()
-
-  if (asPath) {
-    const url = format({ pathname, query });
-    initialState.router = initialRouterState(url, asPath)
+const reducer = (state, action) => {
+  if (action.type === HYDRATE) {
+    const nextState = {
+      ...state, // use previous state
+      ...action.payload, // apply delta from hydration
+    }
+    if (typeof window !== 'undefined' && state?.router) {
+      // preserve router value on client side navigation
+      nextState.router = state.router 
+    }
+    return nextState
+  } else {
+    return combinedReducer(state, action)
   }
-
-  const store = createStore(rootReducer, initialState, bindMiddleware([routerMiddleware]))
-  return store
 }
+
+export const initStore = (context) => {
+  const routerMiddleware = createRouterMiddleware()
+  const { asPath, pathname, query } = context.ctx || Router.router || {};
+  let initialState
+  if (asPath) {
+    const url = format({ pathname, query })
+    initialState = {
+      router: initialRouterState(url, asPath)
+    }
+  }
+  return createStore(reducer, initialState, bindMiddleware([routerMiddleware]))
+}
+
+export const wrapper = createWrapper(initStore)
