@@ -87,8 +87,7 @@ export const wrapper = createWrapper(initStore)
 
 ```js
 // pages/_app.js
-import App, { Container } from 'next/app';
-import { Provider } from 'react-redux'
+import App from 'next/app';
 import { ConnectedRouter } from 'connected-next-router'
 import { wrapper } from '../store/configure-store'
 
