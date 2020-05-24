@@ -39,15 +39,17 @@
     "build": "npm run build:cjs && npm run build:es",
     "build:cjs": "tsc",
     "build:es": "tsc --module esnext --outDir es",
+    "instrument": "nyc instrument --compact=false src instrumented && tsc -p tsconfig.test.json --module esnext --outDir test-lib && rm -rf instrumented",
     "watch": "cross-env BABEL_ENV=commonjs babel src -d . -w --extensions \".ts,.tsx\"",
     "clean": "git clean -xdfe node_modules",
     "type-check": "tsc --noEmit",
     "lint": "npm run type-check && eslint './src/**/*.{ts,tsx}'",
-    "run-typescript-example": "cd examples/typescript && npm run dev",
-    "e2e": "start-test run-typescript-example 3000 cy:open",
+    "e2e:dev": "start-test \"next e2e\" 3000 cy:open",
+    "e2e": "next build e2e && start-test \"next start e2e\" 3000 cy:run",
+    "pree2e": "rm -rf .nyc_output coverage ./e2e/.next || true",
+    "check-coverage-limits": "nyc report --reporter=text-summary --check-coverage --statements 98",
     "cy:open": "cypress open",
-    "pree2e": "rm -rf .nyc_output coverage .next || true",
-    "check-coverage-limits": "nyc report --reporter=text-summary --check-coverage --statements 100"
+    "cy:run": "cypress run"
   },
   "peerDependencies": {
     "next": "^9.0.0",
@@ -64,12 +66,15 @@
     "@typescript-eslint/eslint-plugin": "^3.0.0",
     "@typescript-eslint/parser": "^3.0.0",
     "cross-env": "^7.0.2",
+    "cypress": "^4.3.0",
     "eslint": "^7.1.0",
     "eslint-plugin-import": "^2.20.2",
     "eslint-plugin-react": "^7.20.0",
     "eslint-plugin-react-hooks": "^4.0.2",
     "istanbul-lib-coverage": "^3.0.0",
+    "istanbul-lib-instrument": "^4.0.3",
     "next": "^9.4.2",
+    "next-redux-wrapper": "^6.0.0",
     "nyc": "^15.0.1",
     "prop-types": "^15.7.2",
     "react": "^16.13.1",
@@ -81,8 +86,18 @@
     "typescript": "^3.9.3"
   },
   "nyc": {
+    "parser-plugins": [
+      "typescript"
+    ],
+    "all": true,
+    "extension": [
+      ".ts"
+    ],
+    "include": [
+      "src"
+    ],
     "exclude": [
-      "examples/basic/pages/api/__coverage__.js"
+      "e2e"
     ]
   },
   "repository": {
@@ -91,8 +106,5 @@
   },
   "bugs": {
     "url": "https://github.com/danielr18/connected-next-router/issues"
-  },
-  "dependencies": {
-    "cypress": "^4.3.0"
   }
 }
