@@ -1,10 +1,11 @@
 import React from 'react'
 import Link from 'next/link'
 import Router from 'next/router'
-import { push, replace, goBack, goForward, prefetch } from 'connected-next-router'
+import { push, replace, goBack, goForward, prefetch } from '../../test-lib'
 import { useDispatch } from 'react-redux'
+import locationFromUrl from '../../test-lib/utils/locationFromUrl'
 
-const Navigation = props => {
+const Navigation = () => {
   const dispatch = useDispatch()
   return (
     <div>
@@ -21,7 +22,18 @@ const Navigation = props => {
                   dispatch(push({ pathname: '/about', query: { foo: 'bar' } }))
                 }}
               >
-                Push /about
+                Push /about with Redux action
+              </a>
+            </li>
+            <li>
+              <a
+                href="/blog/2"
+                onClick={e => {
+                  e.preventDefault()
+                  dispatch(replace('/blog/[postId]', '/blog/2'))
+                }}
+              >
+                Replace /blog/2 with Redux action
               </a>
             </li>
             <li>
@@ -29,10 +41,21 @@ const Navigation = props => {
                 href="/"
                 onClick={e => {
                   e.preventDefault()
-                  dispatch(replace('/blog/[postId]', '/blog/2'))
+                  dispatch(replace('/'))
                 }}
               >
-                Replace /blog/2
+                Replace / with Redux action
+              </a>
+            </li>
+            <li>
+              <a
+                href="/hello"
+                onClick={e => {
+                  e.preventDefault()
+                  dispatch(push('/hello'))
+                }}
+              >
+                Push /hello with Redux action
               </a>
             </li>
             <li>
@@ -43,7 +66,7 @@ const Navigation = props => {
                   dispatch(goBack())
                 }}
               >
-                Go Back
+                Go Back with Redux action
               </a>
             </li>
             <li>
@@ -54,7 +77,7 @@ const Navigation = props => {
                   dispatch(goForward())
                 }}
               >
-                Go Forward
+                Go Forward with Redux action
               </a>
             </li>
           </ul>
@@ -118,17 +141,61 @@ const Navigation = props => {
           </ul>
         </li>
       </ul>
-      <h2>Prefetching</h2>
+      <h2>Test</h2>
       <ul>
         <li>
           <a
-            href="about"
+            href="hello"
             onClick={e => {
               e.preventDefault()
-              dispatch(prefetch('/about'))
+              dispatch(prefetch('/hello'))
             }}
           >
-            Prefetch /about
+            Prefetch /hello
+          </a>
+        </li>
+        <li>
+          <a
+            href="/?router=custom"
+            onClick={e => {
+              e.preventDefault()
+              dispatch(push('/?router=custom'))
+            }}
+          >
+            Push /?router=custom
+          </a>
+        </li>
+        <li>
+          <a
+            href=""
+            onClick={e => {
+              e.preventDefault()
+              dispatch(push(locationFromUrl('', '')))
+            }}
+          >
+            Push empty url
+          </a>
+        </li>
+        <li>
+          <a
+            href="/bps"
+            onClick={e => {
+              e.preventDefault()
+              dispatch(push('/bps'))
+            }}
+          >
+            Push /bps
+          </a>
+        </li>
+        <li>
+          <a
+            href="/delay"
+            onClick={e => {
+              e.preventDefault()
+              dispatch(push('/delay'))
+            }}
+          >
+            Push /delay
           </a>
         </li>
       </ul>
