@@ -1,0 +1,28 @@
+on: ["push"]
+
+name: End To End tests
+
+jobs:
+  test:
+    name: Test
+    runs-on: ubuntu-16.04
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Use Node.js 12.x
+      uses: actions/setup-node@v1
+      with:
+        node-version: 12.x
+        
+    - name: npm install
+      run: |
+        npm install
+
+    - name: run tests
+      run: |
+        npm run e2e
+
+    - name: Coveralls GitHub Action
+      uses: coverallsapp/github-action@v1.1.1
+      with:
+        github-token: ${{ secrets.GITHUB_TOKEN }}

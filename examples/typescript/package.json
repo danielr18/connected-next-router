@@ -1,12 +1,11 @@
 {
-  "name": "basic",
-  "version": "0.0.1",
-  "description": "S",
-  "license": "MIT",
+  "name": "typescript",
+  "version": "1.0.0",
   "scripts": {
     "dev": "./node_modules/next/dist/bin/next",
     "build": "./node_modules/next/dist/bin/next build",
-    "start": "./node_modules/next/dist/bin/next start"
+    "start": "./node_modules/next/dist/bin/next start",
+    "type-check": "tsc"
   },
   "dependencies": {
     "connected-next-router": "link:../../",
@@ -17,5 +16,11 @@
     "react-redux": "link:../../node_modules/react-redux",
     "redux": "link:../../node_modules/redux",
     "redux-devtools-extension": "^2.13.8"
-  }
+  },
+  "devDependencies": {
+    "@types/node": "^14.0.5",
+    "@types/react": "^16.9.35",
+    "typescript": "3.9.3"
+  },
+  "license": "ISC"
 }

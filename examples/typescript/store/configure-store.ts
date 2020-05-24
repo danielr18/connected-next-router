@@ -1,10 +1,13 @@
-import { createStore, applyMiddleware, combineReducers } from 'redux'
+import { createStore, applyMiddleware, combineReducers, AnyAction } from 'redux'
 import { createRouterMiddleware, initialRouterState, routerReducer } from 'connected-next-router'
 import { format } from 'url'
-import { HYDRATE, createWrapper } from 'next-redux-wrapper'
+import { Middleware, Reducer } from 'redux'
+import { MakeStore, HYDRATE, createWrapper } from 'next-redux-wrapper'
 import Router from 'next/router'
+import { AppContext } from 'next/app'
+import { State } from '../typings'
 
-const bindMiddleware = (middleware) => {
+const bindMiddleware = (middleware: [Middleware]) => {
   const { composeWithDevTools } = require('redux-devtools-extension')
   return composeWithDevTools(applyMiddleware(...middleware))
 }
@@ -13,7 +16,7 @@ const combinedReducer = combineReducers({
   router: routerReducer,
 })
 
-const reducer = (state, action) => {
+const reducer: Reducer<State, AnyAction> = (state, action) => {
   if (action.type === HYDRATE) {
     const nextState = {
       ...state, // use previous state
@@ -29,9 +32,9 @@ const reducer = (state, action) => {
   }
 }
 
-export const initStore = (context) => {
+export const initStore: MakeStore<State> = (context) => {
   const routerMiddleware = createRouterMiddleware()
-  const { asPath, pathname, query } = context.ctx || Router.router || {};
+  const { asPath, pathname, query } = (context as AppContext).ctx || Router.router || {};
   let initialState
   if (asPath) {
     const url = format({ pathname, query })

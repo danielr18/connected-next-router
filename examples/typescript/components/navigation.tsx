@@ -4,7 +4,7 @@ import Router from 'next/router'
 import { push, replace, goBack, goForward, prefetch } from 'connected-next-router'
 import { useDispatch } from 'react-redux'
 
-const Navigation = props => {
+const Navigation = () => {
   const dispatch = useDispatch()
   return (
     <div>

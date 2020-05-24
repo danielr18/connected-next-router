@@ -5,3 +5,8 @@ node_modules
 lib
 umd
 .next
+.nyc_output
+.vscode
+coverage
+cypress/videos
+test-lib

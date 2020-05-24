@@ -1,13 +1,15 @@
 import React from 'react'
 import Navigation from '../components/navigation'
-import { connect } from 'react-redux'
+import { useSelector } from 'react-redux'
 
-const About = ({ routerState }) => (
+const About = () => {
+  const routerState = useSelector(state => state.router)
+  return (
   <div>
     <h1>About</h1>
     <pre>{JSON.stringify(routerState)}</pre>
     <Navigation />
   </div>
-)
+)}
 
-export default connect(state => ({ routerState: state.router }))(About)
+export default About
