@@ -25,15 +25,16 @@ const createConnectedRouter = (structure: Structure): React.FC<ConnectedRouterPr
     const Router = props.Router || NextRouter
     const { exportTrailingSlash = false, reducerKey = 'router' } = props
     const store = useStore()
+    const ongoingRouteChanges = useRef(0)
     const isTimeTravelEnabled = useRef(false)
     const inTimeTravelling = useRef(false)
 
-    function enableTimeTravel(): void {
-      isTimeTravelEnabled.current = true
+    function trackRouteComplete(): void {
+      isTimeTravelEnabled.current = --ongoingRouteChanges.current <= 0
     }
 
-    function disableTimeTravel(): void {
-      isTimeTravelEnabled.current = false
+    function trackRouteStart(): void {
+      isTimeTravelEnabled.current = ++ongoingRouteChanges.current <= 0
     }
 
     useEffect(() => {
@@ -89,17 +90,17 @@ const createConnectedRouter = (structure: Structure): React.FC<ConnectedRouterPr
 
       Router.ready(() => {
         unpatchRouter = patchRouter(Router, { exportTrailingSlash })
-        Router.events.on('routeChangeStart', disableTimeTravel)
-        Router.events.on('routeChangeError', enableTimeTravel)
-        Router.events.on('routeChangeComplete', enableTimeTravel)
+        Router.events.on('routeChangeStart', trackRouteStart)
+        Router.events.on('routeChangeError', trackRouteComplete)
+        Router.events.on('routeChangeComplete', trackRouteComplete)
         Router.events.on('connectedRouteChangeComplete', listenRouteChanges)
       })
 
       return () => {
         unpatchRouter()
-        Router.events.off('routeChangeStart', disableTimeTravel)
-        Router.events.off('routeChangeError', enableTimeTravel)
-        Router.events.off('routeChangeComplete', enableTimeTravel)
+        Router.events.off('routeChangeStart', trackRouteStart)
+        Router.events.off('routeChangeError', trackRouteComplete)
+        Router.events.off('routeChangeComplete', trackRouteComplete)
         Router.events.off('connectedRouteChangeComplete', listenRouteChanges)
       }
     }, [Router, reducerKey, store, exportTrailingSlash])
