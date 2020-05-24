@@ -1,36 +1,29 @@
 /* global __NEXT_DATA__ */
 
-import rewriteUrlForNextExport from './utils/rewriteUrlForNextExport'
 import { UrlObject } from 'url'
 import { RouterAction, BeforePopStateCallback } from './types'
-import formatWithValidation from './utils/formatWithValidation'
-import { SingletonRouter } from 'next/router'
+import { SingletonRouter, Router } from 'next/router'
+import { formatWithValidation } from 'next/dist/next-server/lib/utils'
+import { rewriteUrlForNextExport } from 'next/dist/next-server/lib/router/rewrite-url-for-export'
 
 type Url = UrlObject | string
 type HistoryMethod = 'replaceState' | 'pushState'
 
-const patchRouter = (Router: SingletonRouter): (() => void) => {
-  if (!Router.router) {
-    return () => {}
-  }
+type RouterToPatch = SingletonRouter & { router: Router }
 
+const patchRouter = (Router: RouterToPatch): (() => void) => {
   function change(method: HistoryMethod, _url: Url, _as: Url, options: any, action: RouterAction): Promise<boolean> {
     const url = typeof _url === 'object' ? formatWithValidation(_url) : _url
     let as = typeof _as === 'object' ? formatWithValidation(_as) : _as
-    if (!Router.router) {
-      return Promise.resolve(false)
-    }
     return Router.router.change(method, _url, _as, options).then((changeResult: boolean) => {
       if (changeResult) {
         if (process.env.__NEXT_EXPORT_TRAILING_SLASH) {
           // @ts-ignore this is temporarily global (attached to window)
           if (__NEXT_DATA__.nextExport) {
-            as = rewriteUrlForNextExport(as)
+            as = rewriteUrlForNextExport (as)
           }
         }
-        if (Router.router) {
-          Router.router.events.emit('connectedRouteChangeComplete', url, as, action)
-        }
+        Router?.router?.events.emit('connectedRouteChangeComplete', url, as, action)
       }
 
       return changeResult
@@ -66,13 +59,11 @@ const patchRouter = (Router: SingletonRouter): (() => void) => {
   }
 
   return () => {
-    if (Router.router) {
-      Router.router.replace = unpatchedMethods.replace
-      Router.router.push = unpatchedMethods.push
-      Router.beforePopState = unpatchedMethods.beforePopState
-      if (unpatchedMethods.bpsCallback) {
-        Router.beforePopState(unpatchedMethods.bpsCallback)
-      }
+    Router.router.replace = unpatchedMethods.replace
+    Router.router.push = unpatchedMethods.push
+    Router.beforePopState = unpatchedMethods.beforePopState
+    if (unpatchedMethods.bpsCallback) {
+      Router.beforePopState(unpatchedMethods.bpsCallback)
     }
   }
 }
