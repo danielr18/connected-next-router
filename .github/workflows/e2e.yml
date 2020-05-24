@@ -14,16 +14,13 @@ jobs:
       with:
         node-version: 12.x
         
-    - name: npm install, make test-coverage
+    - name: npm install
       run: |
         npm install
 
-    - name: Cypress run
-      uses: cypress-io/github-action@v1
-      with:
-        build: npm run pree2e && npm run instrument && ./node_modules/next/dist/bin/next build e2e
-        start: ./node_modules/next/dist/bin/next start e2e
-        wait-on: http://localhost:3000
+    - name: run tests
+      run: |
+        npm run e2e
 
     - name: Coveralls GitHub Action
       uses: coverallsapp/github-action@v1.1.1
