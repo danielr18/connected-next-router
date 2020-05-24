@@ -1,0 +1,27 @@
+on: ["push", "pull_request"]
+
+name: End To End tests
+
+jobs:
+  test:
+    name: Test
+    runs-on: ubuntu-16.04
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Use Node.js 12.x
+      uses: actions/setup-node@v1
+      with:
+        node-version: 12.x
+        
+    - name: Cypress run
+      uses: cypress-io/github-action@v1
+      with:
+        build: npm run pree2e && npm run instrument && ./node_modules/next/dist/bin/next build e2e
+        start: ./node_modules/next/dist/bin/next start e2e
+        wait-on: http://localhost:3030
+
+    - name: Coveralls GitHub Action
+      uses: coverallsapp/github-action@v1.1.1
+      with:
+        github-token: ${{ secrets.GITHUB_TOKEN }}
