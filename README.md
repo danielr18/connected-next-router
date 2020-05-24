@@ -1,6 +1,6 @@
 [![Coverage Status](https://coveralls.io/repos/github/danielr18/connected-next-router/badge.svg?branch=test-github-action)](https://coveralls.io/github/danielr18/connected-next-router?branch=test-github-action)
 
-> v1.0.0 requires React v16.4.0 and React Redux v6.0 or later. If you are using React Redux v5, check out [v0 branch](https://github.com/danielr18/connected-next-router/tree/v0).
+> v3.0.0 requires Next.js 9 or newer, React Redux 7.1.0 or newer, and React 16.8.0 or newer. If you are using Next.js 7-8, check out [v0 branch](https://github.com/danielr18/connected-next-router/tree/v0).
 
 # Connected Next Router
 
@@ -38,10 +38,11 @@ Or [yarn](https://yarnpkg.com/):
 
 
 ```js
-...
+// store/configure-store.js
 import { applyMiddleware, compose, createStore, combineReducers } from 'redux'
 import { routerReducer, createRouterMiddleware, initialRouterState } from 'connected-next-router'
-...
+import { createWrapper } from 'next-redux-wrapper'
+
 const rootReducer = combineReducers({
   ...reducers,
   router: routerReducer
@@ -63,21 +64,21 @@ const routerMiddleware = createRouterMiddleware({
 });
 */
 
-// Using next-redux-wrapper's makeStore
-export const makeStore = (initialState = {}, options) => {
-  if (options.asPath) {
-    initialState.router = initialRouterState(options.asPath);
+// Using next-redux-wrapper's initStore
+export const initStore = (context) => {
+  const routerMiddleware = createRouterMiddleware()
+  const { asPath, pathname, query } = context.ctx || Router.router || {};
+  let initialState
+  if (asPath) {
+    const url = format({ pathname, query })
+    initialState = {
+      router: initialRouterState(url, asPath)
+    }
   }
-
-  return createStore(
-    rootReducer,
-    initialState,
-    applyMiddleware(
-      routerMiddleware,
-      // ... other middlewares ...
-    )
-  );
+  return createStore(rootReducer, initialState, applyMiddleware(routerMiddleware))
 }
+
+export const wrapper = createWrapper(initStore)
 ```
 
 ### Step 2
@@ -85,35 +86,34 @@ export const makeStore = (initialState = {}, options) => {
 - Place `ConnectedRouter` as children of `react-redux`'s `Provider`.
 
 ```js
-...
 // pages/_app.js
 import App, { Container } from 'next/app';
 import { Provider } from 'react-redux'
 import { ConnectedRouter } from 'connected-next-router'
-...
+import { wrapper } from '../store/configure-store'
+
 class MyApp extends App {
   render() {
-    const { Component, pageProps, store } = this.props;
+    const { Component, pageProps } = this.props;
     return (
-      <Container>
-        <Provider store={store}>
-          <ConnectedRouter>
-            <Component { ...pageProps } />
-          </ConnectedRouter>
-        </Provider>
-      </Container>
+      <ConnectedRouter>
+        <Component { ...pageProps } />
+      </ConnectedRouter>
     );
   }
 }
+
+// wrapper.withRedux wraps the App with react-redux's Provider
+export default wrapper.withRedux(MyApp);
 ```
 
 ## Examples
 
 - [examples/basic](/examples/basic) - basic reference implementation
+- [examples/typescript](/examples/typescript) - typescript reference implementation
 
 ## TODO
 
-- Add unit tests
 - Support [Immutable.js](https://facebook.github.io/immutable-js/)
 
 ## Acknowledgements
