@@ -46,7 +46,7 @@
     "lint": "npm run type-check && eslint './src/**/*.{ts,tsx}'",
     "e2e:dev": "start-test \"next e2e\" 3000 cy:open",
     "e2e": "next build e2e && start-test \"next start e2e\" 3000 cy:run",
-    "pree2e": "rm -rf .nyc_output coverage ./e2e/.next || true",
+    "pree2e": "rm -rf .nyc_output coverage ./e2e/.next || true && npm run instrument",
     "check-coverage-limits": "nyc report --reporter=text-summary --check-coverage --statements 98",
     "cy:open": "cypress open",
     "cy:run": "cypress run"
