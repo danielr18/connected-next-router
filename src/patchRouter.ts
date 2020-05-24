@@ -7,19 +7,14 @@ import formatWithValidation from './utils/formatWithValidation'
 import { SingletonRouter } from 'next/router'
 
 type Url = UrlObject | string
+type HistoryMethod = 'replaceState' | 'pushState'
 
-export type PatchRouterOptions = {
-  exportTrailingSlash?: boolean;
-}
-
-const patchRouter = (Router: SingletonRouter, opts: PatchRouterOptions = {}): (() => void) => {
-  const { exportTrailingSlash = false } = opts
-
+const patchRouter = (Router: SingletonRouter): (() => void) => {
   if (!Router.router) {
     return () => {}
   }
 
-  function change(method: string, _url: Url, _as: Url, options: any, action: RouterAction): Promise<boolean> {
+  function change(method: HistoryMethod, _url: Url, _as: Url, options: any, action: RouterAction): Promise<boolean> {
     const url = typeof _url === 'object' ? formatWithValidation(_url) : _url
     let as = typeof _as === 'object' ? formatWithValidation(_as) : _as
     if (!Router.router) {
@@ -27,9 +22,11 @@ const patchRouter = (Router: SingletonRouter, opts: PatchRouterOptions = {}): ((
     }
     return Router.router.change(method, _url, _as, options).then((changeResult: boolean) => {
       if (changeResult) {
-        // @ts-ignore this is temporarily global (attached to window)
-        if (exportTrailingSlash && __NEXT_DATA__.nextExport) {
-          as = rewriteUrlForNextExport(as)
+        if (process.env.__NEXT_EXPORT_TRAILING_SLASH) {
+          // @ts-ignore this is temporarily global (attached to window)
+          if (__NEXT_DATA__.nextExport) {
+            as = rewriteUrlForNextExport(as)
+          }
         }
         if (Router.router) {
           Router.router.events.emit('connectedRouteChangeComplete', url, as, action)

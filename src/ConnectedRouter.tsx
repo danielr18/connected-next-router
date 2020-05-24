@@ -10,7 +10,6 @@ type ConnectedRouterProps = {
   children?: React.ReactNode;
   reducerKey?: string;
   Router?: SingletonRouter;
-  exportTrailingSlash?: boolean;
 }
 
 const createConnectedRouter = (structure: Structure): React.FC<ConnectedRouterProps> => {
@@ -23,7 +22,7 @@ const createConnectedRouter = (structure: Structure): React.FC<ConnectedRouterPr
    */
   const ConnectedRouter: React.FC<ConnectedRouterProps> = props => {
     const Router = props.Router || NextRouter
-    const { exportTrailingSlash = false, reducerKey = 'router' } = props
+    const { reducerKey = 'router' } = props
     const store = useStore()
     const isTimeTravelEnabled = useRef(false)
     const inTimeTravelling = useRef(false)
@@ -88,7 +87,7 @@ const createConnectedRouter = (structure: Structure): React.FC<ConnectedRouterPr
       }
 
       Router.ready(() => {
-        unpatchRouter = patchRouter(Router, { exportTrailingSlash })
+        unpatchRouter = patchRouter(Router)
         Router.events.on('routeChangeStart', disableTimeTravel)
         Router.events.on('routeChangeError', enableTimeTravel)
         Router.events.on('routeChangeComplete', enableTimeTravel)
@@ -102,7 +101,7 @@ const createConnectedRouter = (structure: Structure): React.FC<ConnectedRouterPr
         Router.events.off('routeChangeComplete', enableTimeTravel)
         Router.events.off('connectedRouteChangeComplete', listenRouteChanges)
       }
-    }, [Router, reducerKey, store, exportTrailingSlash])
+    }, [Router, reducerKey, store])
 
     return <>{props.children}</>
   }

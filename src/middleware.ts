@@ -35,7 +35,7 @@ const createRouterMiddleware = (middlewareOpts: RouterMiddlewareOpts = {}): Midd
     if (method) {
       if (method === GO && typeof window !== 'undefined' && typeof args[0] === 'number') {
         window.history.go(args[0])
-      } else if (Router.hasOwnProperty(method)) {
+      } else if (Object.prototype.hasOwnProperty.call(Router, method)) {
         (Router as any)[method](...args)
       }
     }

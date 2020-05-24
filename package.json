@@ -42,7 +42,12 @@
     "watch": "cross-env BABEL_ENV=commonjs babel src -d . -w --extensions \".ts,.tsx\"",
     "clean": "git clean -xdfe node_modules",
     "type-check": "tsc --noEmit",
-    "lint": "npm run type-check && eslint './src/**/*.{ts,tsx}'"
+    "lint": "npm run type-check && eslint './src/**/*.{ts,tsx}'",
+    "run-typescript-example": "cd examples/typescript && npm run dev",
+    "e2e": "start-test run-typescript-example 3000 cy:open",
+    "cy:open": "cypress open",
+    "pree2e": "rm -rf .nyc_output coverage .next || true",
+    "check-coverage-limits": "nyc report --reporter=text-summary --check-coverage --statements 100"
   },
   "peerDependencies": {
     "next": "^9.0.0",
@@ -51,24 +56,34 @@
     "redux": "^3.6.0 || ^4.0.0"
   },
   "devDependencies": {
-    "@types/node": "^12.6.2",
-    "@types/react": "^16.8.23",
-    "@types/react-redux": "^7.1.1",
-    "@typescript-eslint/eslint-plugin": "^1.12.0",
-    "@typescript-eslint/parser": "^1.12.0",
-    "cross-env": "^5.2.0",
-    "eslint": "^5.16.0",
-    "eslint-plugin-import": "^2.14.0",
-    "eslint-plugin-react": "^7.11.0",
-    "eslint-plugin-react-hooks": "^1.6.1",
-    "next": "^9.0.1",
-    "prop-types": "^15.5.8",
-    "react": "^16.8.0",
-    "react-dom": "^16.8.0",
-    "react-redux": "^7.1.0",
-    "redux": "^4.0.1",
-    "tslib": "^1.10.0",
-    "typescript": "^3.5.3"
+    "@cypress/code-coverage": "^3.7.5",
+    "@types/node": "^14.0.5",
+    "@types/react": "^16.9.35",
+    "@types/react-dom": "^16.9.8",
+    "@types/react-redux": "^7.1.9",
+    "@typescript-eslint/eslint-plugin": "^3.0.0",
+    "@typescript-eslint/parser": "^3.0.0",
+    "cross-env": "^7.0.2",
+    "eslint": "^7.1.0",
+    "eslint-plugin-import": "^2.20.2",
+    "eslint-plugin-react": "^7.20.0",
+    "eslint-plugin-react-hooks": "^4.0.2",
+    "istanbul-lib-coverage": "^3.0.0",
+    "next": "^9.4.2",
+    "nyc": "^15.0.1",
+    "prop-types": "^15.7.2",
+    "react": "^16.13.1",
+    "react-dom": "^16.13.1",
+    "react-redux": "^7.2.0",
+    "redux": "^4.0.5",
+    "start-server-and-test": "^1.10.11",
+    "tslib": "^2.0.0",
+    "typescript": "^3.9.3"
+  },
+  "nyc": {
+    "exclude": [
+      "examples/basic/pages/api/__coverage__.js"
+    ]
   },
   "repository": {
     "type": "git",
@@ -76,5 +91,8 @@
   },
   "bugs": {
     "url": "https://github.com/danielr18/connected-next-router/issues"
+  },
+  "dependencies": {
+    "cypress": "^4.3.0"
   }
 }
