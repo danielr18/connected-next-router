@@ -32,12 +32,12 @@ const createRouterMiddleware = (middlewareOpts: RouterMiddlewareOpts = {}): Midd
     }
     const { args } = payload
     const method = resolvedMethods[payload.method]
-    if (method) {
-      if (method === GO && typeof window !== 'undefined' && typeof args[0] === 'number') {
-        window.history.go(args[0])
-      } else if (Object.prototype.hasOwnProperty.call(Router, method)) {
-        (Router as any)[method](...args)
-      }
+    if (method === GO && typeof window !== 'undefined' && typeof args[0] === 'number') {
+      window.history.go(args[0])
+    } else if (method && Object.prototype.hasOwnProperty.call(Router, method)) {
+      (Router as any)[method](...args)
+    } else if (process.env.NODE_ENV === 'development') {
+      throw new Error(`Router method "${method}" for ${payload.method} action does not exist`)
     }
   }
 }
