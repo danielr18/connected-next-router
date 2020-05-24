@@ -1,32 +1,17 @@
 import App from 'next/app'
 import React from 'react'
-import { Provider } from 'react-redux'
-import withRedux from 'next-redux-wrapper'
 import { ConnectedRouter } from 'connected-next-router'
-import { configureStore } from '../store/configure-store'
-import { Store } from 'redux'
+import { wrapper } from '../store/configure-store'
 
-type AppProps = {
-  store: Store;
-}
-
-declare var process : {
-  env: {
-    __NEXT_EXPORT_TRAILING_SLASH: boolean
-  }
-}
-
-class ExampleApp extends App<AppProps> {
+class ExampleApp extends App {
   render() {
-    const { Component, pageProps, store } = this.props
+    const { Component, pageProps } = this.props
     return (
-      <Provider store={store}>
-        <ConnectedRouter exportTrailingSlash={process.env.__NEXT_EXPORT_TRAILING_SLASH}>
-          <Component {...pageProps} />
-        </ConnectedRouter>
-      </Provider>
+      <ConnectedRouter>
+        <Component {...pageProps} />
+      </ConnectedRouter>
     )
   }
 }
 
-export default withRedux(configureStore)(ExampleApp)
+export default wrapper.withRedux(ExampleApp)

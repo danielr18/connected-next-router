@@ -2,29 +2,25 @@
   "name": "typescript",
   "version": "1.0.0",
   "scripts": {
-    "postinstall": "npm link ../../",
-    "postupdate": "npm link ../../",
-    "dev": "next",
-    "build": "next build",
-    "start": "next start",
+    "dev": "./node_modules/next/dist/bin/next",
+    "build": "./node_modules/next/dist/bin/next build",
+    "start": "./node_modules/next/dist/bin/next start",
     "type-check": "tsc"
   },
   "dependencies": {
-    "cross-env": "^5.2.0",
-    "next": "^9.0.0",
-    "next-redux-wrapper": "^4.0.0",
-    "react": "^16.8.6",
-    "react-dom": "^16.8.6",
-    "react-redux": "^7.1.0",
-    "redux": "^4.0.0",
-    "redux-devtools-extension": "^2.13.5"
+    "connected-next-router": "link:../../",
+    "next": "link:../../node_modules/next",
+    "next-redux-wrapper": "^6.0.0",
+    "react": "link:../../node_modules/react",
+    "react-dom": "link:../../node_modules/react-dom",
+    "react-redux": "link:../../node_modules/react-redux",
+    "redux": "link:../../node_modules/redux",
+    "redux-devtools-extension": "^2.13.8"
   },
   "devDependencies": {
-    "@types/node": "^11.13.9",
-    "@types/react": "^16.8.15",
-    "@types/react-dom": "^16.0.11",
-    "next-transpile-modules": "^2.3.1",
-    "typescript": "3.5.2"
+    "@types/node": "^14.0.5",
+    "@types/react": "^16.9.35",
+    "typescript": "3.9.3"
   },
   "license": "ISC"
 }
