@@ -1,6 +1,6 @@
 {
   "name": "connected-next-router",
-  "version": "3.0.1",
+  "version": "3.1.0",
   "description": "A Redux binding for Next.js Router",
   "author": "Daniel Reinoso <danielreinoso1807@gmail.com> (http://danielr18.github.io)",
   "license": "MIT",
