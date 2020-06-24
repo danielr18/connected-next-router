@@ -24,6 +24,7 @@ module.exports = {
     '@typescript-eslint/prefer-interface': 'off',
     '@typescript-eslint/no-explicit-any': 'off',
     'no-empty-function': 'off',
+    'prefer-const': 'off',
     '@typescript-eslint/no-empty-function': 'off',
     '@typescript-eslint/explicit-function-return-type': [
       'error',

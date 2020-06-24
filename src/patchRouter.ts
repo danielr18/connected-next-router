@@ -1,10 +1,9 @@
 /* global __NEXT_DATA__ */
-
+declare const __NEXT_DATA__: any
 import { UrlObject } from 'url'
 import { RouterAction, BeforePopStateCallback } from './types'
 import { SingletonRouter, Router } from 'next/router'
 import { formatWithValidation } from 'next/dist/next-server/lib/utils'
-import { rewriteUrlForNextExport } from 'next/dist/next-server/lib/router/rewrite-url-for-export'
 
 type Url = UrlObject | string
 type HistoryMethod = 'replaceState' | 'pushState'
@@ -18,9 +17,10 @@ const patchRouter = (Router: RouterToPatch): (() => void) => {
     return Router.router.change(method, _url, _as, options).then((changeResult: boolean) => {
       if (changeResult) {
         if (process.env.__NEXT_EXPORT_TRAILING_SLASH) {
+          const rewriteUrlForNextExport = require('./utils/rewriteUrlForExport').rewriteUrlForNextExport
           // @ts-ignore this is temporarily global (attached to window)
           if (__NEXT_DATA__.nextExport) {
-            as = rewriteUrlForNextExport (as)
+            as = rewriteUrlForNextExport(as)
           }
         }
         Router?.router?.events.emit('connectedRouteChangeComplete', url, as, action)
