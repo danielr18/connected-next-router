@@ -110,6 +110,7 @@ export default wrapper.withRedux(MyApp);
 
 - [examples/basic](/examples/basic) - basic reference implementation
 - [examples/typescript](/examples/typescript) - typescript reference implementation
+- [without next-redux-wrapper](https://github.com/danielr18/connected-next-router/issues/49)
 
 ## TODO
 
