@@ -52,7 +52,7 @@
     "cy:run": "cypress run"
   },
   "peerDependencies": {
-    "next": "^9.0.0",
+    "next": "^9.5.0",
     "react": "^16.8.0",
     "react-redux": "^7.1.0",
     "redux": "^3.6.0 || ^4.0.0"
