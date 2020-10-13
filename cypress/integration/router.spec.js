@@ -48,7 +48,7 @@ describe('Connected Next Router', () => {
       cy.get('head link[rel=prefetch]')
         .last()
         .should('have.attr', 'href')
-        .and('match', /hello\.js$/);
+        .and('match', /hello-\w+\.js$/);
     });
 
     it('Ignores invalid URLs passed to the action', () => {
