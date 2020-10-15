@@ -3,7 +3,7 @@ declare const __NEXT_DATA__: any
 import { UrlObject } from 'url'
 import { RouterAction, BeforePopStateCallback } from './types'
 import { SingletonRouter, Router } from 'next/router'
-import { addBasePath, resolveHref } from "next/dist/next-server/lib/router/router"
+import { addBasePath, resolveHref } from 'next/dist/next-server/lib/router/router'
 
 type Url = UrlObject | string
 type HistoryMethod = 'replaceState' | 'pushState'
@@ -11,7 +11,7 @@ type HistoryMethod = 'replaceState' | 'pushState'
 type RouterToPatch = SingletonRouter & { router: Router }
 
 const patchRouter = (Router: RouterToPatch): (() => void) => {
-  function prepareUrlAs(router: Router, url: Url, as: Url) {
+  function prepareUrlAs(router: Router, url: Url, as: Url): { url: string, as: string } {
     // If url and as provided as an object representation,
     // we'll format them into the string version here.
     return {
@@ -20,7 +20,9 @@ const patchRouter = (Router: RouterToPatch): (() => void) => {
     }
   }
 
-  function change(method: HistoryMethod, url: string, as: string, options: any, action: RouterAction): Promise<boolean> {
+  function change(
+    method: HistoryMethod, url: string, as: string, options: any, action: RouterAction
+  ): Promise<boolean> {
     return Router.router.change(method, url, as, options).then((changeResult: boolean) => {
       if (changeResult) {
         if (process.env.__NEXT_EXPORT_TRAILING_SLASH) {
@@ -45,13 +47,13 @@ const patchRouter = (Router: RouterToPatch): (() => void) => {
   }
 
   Router.router.replace = function(url: Url, as: Url = url, options: any = {}) {
-    ;({ url, as } = prepareUrlAs(this, url, as))
-    return change("replaceState", url, as, options, "REPLACE")
+    ({ url, as } = prepareUrlAs(this, url, as))
+    return change('replaceState', url, as, options, 'REPLACE')
   }
 
   Router.router.push = function(url: Url, as: Url = url, options: any = {}) {
-    ;({ url, as } = prepareUrlAs(this, url, as))
-    return change("pushState", url, as, options, "PUSH")
+    ({ url, as } = prepareUrlAs(this, url, as))
+    return change('pushState', url, as, options, 'PUSH')
   }
 
   Router.beforePopState(function(state): boolean {
