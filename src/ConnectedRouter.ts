@@ -9,7 +9,7 @@ import { Structure, RouterAction, LocationState } from './types'
 type ConnectedRouterProps = {
   children?: React.ReactNode;
   reducerKey?: string;
-  ignoreInitial?: boolean,
+  isClientSideAutoInitial?: boolean,
   Router?: SingletonRouter;
 }
 
@@ -23,7 +23,7 @@ const createConnectedRouter = (structure: Structure): React.FC<ConnectedRouterPr
    */
   const ConnectedRouter: React.FC<ConnectedRouterProps> = props => {
     const Router = props.Router || NextRouter
-    const { reducerKey = 'router', ignoreInitial = false } = props
+    const { reducerKey = 'router', isClientSideAutoInitial = false } = props
     const store = useStore()
     const ongoingRouteChanges = useRef(0)
     const isTimeTravelEnabled = useRef(false)
@@ -38,13 +38,18 @@ const createConnectedRouter = (structure: Structure): React.FC<ConnectedRouterPr
     }
 
     useEffect(() => {
-      if (!ignoreInitial) {
+      if (!isClientSideAutoInitial) {
+        return
+      }
+
+      if (typeof window === 'undefined') {
         return
       }
 
       Router.ready(() => {
         // Router.ready ensures that Router.router is defined
-        store.dispatch(onLocationChanged(locationFromUrl(Router.asPath), 'REPLACE'))
+        const { pathname } = window.location
+        store.dispatch(onLocationChanged(locationFromUrl(pathname), 'REPLACE'))
       })
 
       // eslint-disable-next-line react-hooks/exhaustive-deps
