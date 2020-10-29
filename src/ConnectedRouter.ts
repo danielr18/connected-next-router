@@ -9,7 +9,7 @@ import { Structure, RouterAction, LocationState } from './types'
 type ConnectedRouterProps = {
   children?: React.ReactNode;
   reducerKey?: string;
-  isClientSideAutoInitial?: boolean,
+  clientSideAutosync?: boolean,
   Router?: SingletonRouter;
 }
 
@@ -23,7 +23,7 @@ const createConnectedRouter = (structure: Structure): React.FC<ConnectedRouterPr
    */
   const ConnectedRouter: React.FC<ConnectedRouterProps> = props => {
     const Router = props.Router || NextRouter
-    const { reducerKey = 'router', isClientSideAutoInitial = false } = props
+    const { reducerKey = 'router', clientSideAutosync = false } = props
     const store = useStore()
     const ongoingRouteChanges = useRef(0)
     const isTimeTravelEnabled = useRef(false)
@@ -38,7 +38,7 @@ const createConnectedRouter = (structure: Structure): React.FC<ConnectedRouterPr
     }
 
     useEffect(() => {
-      if (!isClientSideAutoInitial) {
+      if (!clientSideAutosync) {
         return
       }
 
@@ -48,8 +48,15 @@ const createConnectedRouter = (structure: Structure): React.FC<ConnectedRouterPr
 
       Router.ready(() => {
         // Router.ready ensures that Router.router is defined
-        const { pathname } = window.location
-        store.dispatch(onLocationChanged(locationFromUrl(pathname), 'REPLACE'))
+        const { router }= Router
+        if (!router) {
+          return
+        }
+        const pathname = router.pathname || ''
+        const { location } = window
+        const asPath = `${location.pathname}${location.search}`
+
+        store.dispatch(onLocationChanged(locationFromUrl(pathname, asPath), 'REPLACE'))
       })
 
       // eslint-disable-next-line react-hooks/exhaustive-deps
