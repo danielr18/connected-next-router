@@ -29,11 +29,12 @@ const createConnectedRouter = (structure: Structure): React.FC<ConnectedRouterPr
     const inTimeTravelling = useRef(false)
 
     function trackRouteComplete(): void {
-      isTimeTravelEnabled.current = --ongoingRouteChanges.current <= 0
+      ongoingRouteChanges.current = Math.max(ongoingRouteChanges.current - 1, 0)
+      isTimeTravelEnabled.current = ongoingRouteChanges.current === 0
     }
 
     function trackRouteStart(): void {
-      isTimeTravelEnabled.current = ++ongoingRouteChanges.current <= 0
+      isTimeTravelEnabled.current = ++ongoingRouteChanges.current === 0
     }
 
     useEffect(() => {
