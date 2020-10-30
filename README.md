@@ -39,6 +39,7 @@ Or [yarn](https://yarnpkg.com/):
 
 ```js
 // store/configure-store.js
+import { format } from 'url';
 import { applyMiddleware, compose, createStore, combineReducers } from 'redux'
 import { routerReducer, createRouterMiddleware, initialRouterState } from 'connected-next-router'
 import { createWrapper } from 'next-redux-wrapper'
@@ -68,10 +69,11 @@ const routerMiddleware = createRouterMiddleware({
 export const initStore = (context) => {
   const routerMiddleware = createRouterMiddleware()
   const { asPath, pathname, query } = context.ctx || Router.router || {};
-  let initialState
+  let initialState = {}
   if (asPath) {
     const url = format({ pathname, query })
     initialState = {
+      ...initialState,
       router: initialRouterState(url, asPath)
     }
   }
