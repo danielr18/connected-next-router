@@ -10,6 +10,7 @@ type ConnectedRouterProps = {
   children?: React.ReactNode;
   reducerKey?: string;
   Router?: SingletonRouter;
+  clientSideAutosync?: boolean,
 }
 
 const createConnectedRouter = (structure: Structure): React.FC<ConnectedRouterProps> => {
@@ -22,7 +23,7 @@ const createConnectedRouter = (structure: Structure): React.FC<ConnectedRouterPr
    */
   const ConnectedRouter: React.FC<ConnectedRouterProps> = props => {
     const Router = props.Router || NextRouter
-    const { reducerKey = 'router' } = props
+    const { reducerKey = 'router', clientSideAutosync = false } = props
     const store = useStore()
     const ongoingRouteChanges = useRef(0)
     const isTimeTravelEnabled = useRef(false)
@@ -35,6 +36,30 @@ const createConnectedRouter = (structure: Structure): React.FC<ConnectedRouterPr
     function trackRouteStart(): void {
       isTimeTravelEnabled.current = ++ongoingRouteChanges.current <= 0
     }
+
+    useEffect(() => {
+      if (!clientSideAutosync) {
+        return
+      }
+      if (typeof window === 'undefined') {
+        return
+      }
+
+      Router.ready(() => {
+        // Router.ready ensures that Router.router is defined
+        const { router }= Router
+        if (!router) {
+          return
+        }
+        const pathname = router.pathname || ''
+        const { location } = window
+        const realAsPath = `${location.pathname}${location.search}`
+
+        store.dispatch(onLocationChanged(locationFromUrl(pathname, realAsPath), 'REPLACE'))
+      })
+
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [])
 
     useEffect(() => {
       function listenStoreChanges(): void {
