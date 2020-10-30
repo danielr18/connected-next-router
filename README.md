@@ -39,7 +39,7 @@ Or [yarn](https://yarnpkg.com/):
 
 ```js
 // store/configure-store.js
-import { format } from 'url';
+import { format } from 'url'
 import { applyMiddleware, compose, createStore, combineReducers } from 'redux'
 import { routerReducer, createRouterMiddleware, initialRouterState } from 'connected-next-router'
 import { createWrapper } from 'next-redux-wrapper'
