@@ -14,8 +14,6 @@ A Redux binding for Next.js Router compatible with Next.js.
 
 :clock9: Support time traveling in Redux DevTools.
 
-:gift: Compatible with [next-routes](https://github.com/fridays/next-routes).
-
 :gem: Ease migration to [next.js](https://github.com/zeit/next.js) framework from codebases using [connected-react-router](https://github.com/supasate/connected-react-router) or [react-router-redux](https://github.com/ReactTraining/react-router/tree/master/packages/react-router-redux) (see [migration guide](/MIGRATION.md)).
 
 ## Installation
@@ -49,20 +47,6 @@ const rootReducer = combineReducers({
 });
 
 const routerMiddleware = createRouterMiddleware();
-
-/*
-If you use next-routes, you have to import Router from your routes.js file
-and create the router middleware as below:
-
-const routerMiddleware = createRouterMiddleware({
-  Router,
-  methods: {
-    push: 'pushRoute',
-    replace: 'replaceRoute',
-    prefetch: 'prefetchRoute',
-  },
-});
-*/
 
 // Using next-redux-wrapper's initStore
 export const initStore = (context) => {
