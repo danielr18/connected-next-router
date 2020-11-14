@@ -38,8 +38,10 @@ Or [yarn](https://yarnpkg.com/):
 ```js
 // store/configure-store.js
 import { applyMiddleware, compose, createStore, combineReducers } from 'redux'
-import { routerReducer, createRouterMiddleware, initialRouterState } from 'connected-next-router'
+import { createRouterMiddleware, initialRouterState, routerReducer } from 'connected-next-router'
+import { format } from 'url'
 import { createWrapper } from 'next-redux-wrapper'
+import Router from 'next/router'
 
 const rootReducer = combineReducers({
   ...reducers,
