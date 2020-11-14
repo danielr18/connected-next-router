@@ -3,7 +3,7 @@ declare const __NEXT_DATA__: any
 import { UrlObject } from 'url'
 import { RouterAction, BeforePopStateCallback } from './types'
 import { SingletonRouter, Router } from 'next/router'
-import { formatWithValidation } from 'next/dist/next-server/lib/utils'
+import { addBasePath, resolveHref } from 'next/dist/next-server/lib/router/router'
 
 type Url = UrlObject | string
 type HistoryMethod = 'replaceState' | 'pushState'
@@ -11,10 +11,19 @@ type HistoryMethod = 'replaceState' | 'pushState'
 type RouterToPatch = SingletonRouter & { router: Router }
 
 const patchRouter = (Router: RouterToPatch): (() => void) => {
-  function change(method: HistoryMethod, _url: Url, _as: Url, options: any, action: RouterAction): Promise<boolean> {
-    const url = typeof _url === 'object' ? formatWithValidation(_url) : _url
-    let as = typeof _as === 'object' ? formatWithValidation(_as) : _as
-    return Router.router.change(method, _url, _as, options).then((changeResult: boolean) => {
+  function prepareUrlAs(router: Router, url: Url, as: Url): { url: string, as: string } {
+    // If url and as provided as an object representation,
+    // we'll format them into the string version here.
+    return {
+      url: addBasePath(resolveHref(router.pathname, url)),
+      as: as ? addBasePath(resolveHref(router.pathname, as)) : as,
+    }
+  }
+
+  function change(
+    method: HistoryMethod, url: string, as: string, options: any, action: RouterAction
+  ): Promise<boolean> {
+    return Router.router.change(method, url, as, options).then((changeResult: boolean) => {
       if (changeResult) {
         if (process.env.__NEXT_EXPORT_TRAILING_SLASH) {
           const rewriteUrlForNextExport = require('./utils/rewriteUrlForExport').rewriteUrlForNextExport
@@ -38,10 +47,12 @@ const patchRouter = (Router: RouterToPatch): (() => void) => {
   }
 
   Router.router.replace = function(url: Url, as: Url = url, options: any = {}) {
+    ({ url, as } = prepareUrlAs(this, url, as))
     return change('replaceState', url, as, options, 'REPLACE')
   }
 
   Router.router.push = function(url: Url, as: Url = url, options: any = {}) {
+    ({ url, as } = prepareUrlAs(this, url, as))
     return change('pushState', url, as, options, 'PUSH')
   }
 
