@@ -27,7 +27,6 @@ const patchRouter = (Router: RouterToPatch): (() => void) => {
       if (changeResult) {
         if (process.env.__NEXT_EXPORT_TRAILING_SLASH) {
           const rewriteUrlForNextExport = require('./utils/rewriteUrlForExport').rewriteUrlForNextExport
-          // @ts-ignore this is temporarily global (attached to window)
           if (__NEXT_DATA__.nextExport) {
             as = rewriteUrlForNextExport(as)
           }
