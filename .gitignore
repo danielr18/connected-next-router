@@ -7,6 +7,7 @@ umd
 .next
 .nyc_output
 .vscode
+instrumented
 coverage
 cypress/videos
 test-lib
