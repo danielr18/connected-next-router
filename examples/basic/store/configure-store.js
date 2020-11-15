@@ -1,6 +1,5 @@
 import { createStore, applyMiddleware, combineReducers } from 'redux'
 import { createRouterMiddleware, initialRouterState, routerReducer } from 'connected-next-router'
-import { format } from 'url'
 import { HYDRATE, createWrapper } from 'next-redux-wrapper'
 import Router from 'next/router'
 
@@ -31,12 +30,11 @@ const reducer = (state, action) => {
 
 export const initStore = (context) => {
   const routerMiddleware = createRouterMiddleware()
-  const { asPath, pathname, query } = context.ctx || Router.router || {};
+  const { asPath } = context.ctx || Router.router || {};
   let initialState
   if (asPath) {
-    const url = format({ pathname, query })
     initialState = {
-      router: initialRouterState(url, asPath)
+      router: initialRouterState(asPath)
     }
   }
   return createStore(reducer, initialState, bindMiddleware([routerMiddleware]))
