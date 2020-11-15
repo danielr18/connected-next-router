@@ -24,8 +24,6 @@
     "index.d.ts",
     "middleware.js",
     "middleware.d.ts",
-    "patchRouter.js",
-    "patchRouter.d.ts",
     "reducer.js",
     "reducer.d.ts",
     "routerMethods.js",

@@ -9,7 +9,6 @@ export type RouterAction = 'POP' | 'PUSH' | 'REPLACE'
 
 export type RouterState = {
   location: LocationState;
-  action: RouterAction;
 }
 
 export type BeforePopStateCallback = (state: any) => boolean

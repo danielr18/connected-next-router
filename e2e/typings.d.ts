@@ -4,5 +4,6 @@ import { NextPageContext } from 'next';
 import { AppContext } from 'next/app';
 import { RouterState } from '../test-lib/types';
 export interface State {
-  router: RouterState
+  router: RouterState,
+  routerEventCounts: any
 }

@@ -15,11 +15,10 @@ export type LocationChangeAction = {
   payload: RouterState;
 }
 
-export const onLocationChanged = (location: LocationState, action: RouterAction): LocationChangeAction => ({
+export const onLocationChanged = (location: LocationState): LocationChangeAction => ({
   type: LOCATION_CHANGE,
   payload: {
     location,
-    action
   }
 })
 

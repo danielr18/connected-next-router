@@ -170,7 +170,7 @@ const Navigation = () => {
             href=""
             onClick={e => {
               e.preventDefault()
-              dispatch(push(locationFromUrl('', '')))
+              dispatch(push(locationFromUrl('')))
             }}
           >
             Push empty url

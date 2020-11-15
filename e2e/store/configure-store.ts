@@ -14,21 +14,21 @@ const combinedReducer = combineReducers({
 
 const composeEnhancers = typeof window !== 'undefined' ? window['__REDUX_DEVTOOLS_EXTENSION_COMPOSE__'] || compose : compose;
 
+let hydrated = false;
 const reducer: Reducer<State, AnyAction> = (state, action) => {
-  if (action.type === HYDRATE) {
-    const nextState = {
-      ...state, // use previous state
-      ...action.payload, // apply delta from hydration
-    }
-    if (state?.router) nextState.router = state.router // preserve router value on client side navigation
-    return nextState
+  if (!hydrated) {
+    hydrated = typeof window !== 'undefined';
+    return {
+      ...state,
+      ...action.payload
+    };
   } else {
     return combinedReducer(state, action)
   }
 }
 
 export const initStore: MakeStore<State> = (context) => {
-  const { asPath, pathname, query } = (context as AppContext).ctx || Router.router || {};
+  const { asPath, query } = (context as AppContext).ctx || Router.router || {};
   let routerMiddleware;
   if (query && query.router === 'custom') {
     Router['pushRoute'] = Router.push;
@@ -43,9 +43,8 @@ export const initStore: MakeStore<State> = (context) => {
   }
   let initialState
   if (asPath) {
-    const url = format({ pathname, query })
     initialState = {
-      router: initialRouterState(url, asPath)
+      router: initialRouterState(asPath),
     }
   }
   return createStore(reducer, initialState, composeEnhancers(applyMiddleware(routerMiddleware)))

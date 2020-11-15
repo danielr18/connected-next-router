@@ -15,8 +15,9 @@ export {
   prefetch,
 } from './actions'
 export { default as routerMethods } from './routerMethods'
-export { default as createRouterMiddleware } from './middleware'
+import _createRouterMiddleware from './middleware'
 
 export const initialRouterState = createInitialRouterState(plainStructure)
 export const routerReducer = createRouterReducer(plainStructure)
 export const ConnectedRouter = createConnectedRouter(plainStructure)
+export const createRouterMiddleware = _createRouterMiddleware(plainStructure)

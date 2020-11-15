@@ -2,9 +2,8 @@ import React, { useEffect, useRef } from 'react'
 import { useStore } from 'react-redux'
 import NextRouter, { SingletonRouter } from 'next/router'
 import { onLocationChanged } from './actions'
-import patchRouter from './patchRouter'
 import locationFromUrl from './utils/locationFromUrl'
-import { Structure, RouterAction, LocationState } from './types'
+import { Structure, LocationState } from './types'
 
 type ConnectedRouterProps = {
   children?: React.ReactNode;
@@ -25,7 +24,7 @@ const createConnectedRouter = (structure: Structure): React.FC<ConnectedRouterPr
     const { reducerKey = 'router' } = props
     const store = useStore()
     const ongoingRouteChanges = useRef(0)
-    const isTimeTravelEnabled = useRef(false)
+    const isTimeTravelEnabled = useRef(true)
     const inTimeTravelling = useRef(false)
 
     function trackRouteComplete(): void {
@@ -48,6 +47,7 @@ const createConnectedRouter = (structure: Structure): React.FC<ConnectedRouterPr
         if (!isTimeTravelEnabled.current) {
           return
         }
+
         const storeLocation = getIn(store.getState(), [reducerKey, 'location']) as LocationState
         const {
           pathname: pathnameInStore,
@@ -61,6 +61,7 @@ const createConnectedRouter = (structure: Structure): React.FC<ConnectedRouterPr
         // If we do time travelling, the location in store is changed but location in Router is not changed
         const locationMismatch =
           pathnameInHistory !== pathnameInStore || searchInHistory !== searchInStore || hashInStore !== hashInHistory
+
         if (locationMismatch) {
           const as = `${pathnameInStore}${searchInStore}${hashInStore}`
           // Update Router's location to match store's location
@@ -74,33 +75,30 @@ const createConnectedRouter = (structure: Structure): React.FC<ConnectedRouterPr
     }, [Router, store, reducerKey])
 
     useEffect(() => {
-      let unpatchRouter = (): void => {}
-      
-      function listenRouteChanges(url: string, as: string, action: RouterAction): void {
+      function onRouteChangeFinish(url: string): void {
         // Dispatch onLocationChanged except when we're time travelling
         if (!inTimeTravelling.current) {
-          store.dispatch(onLocationChanged(locationFromUrl(url, as), action))
+          const storeLocation = getIn(store.getState(), [reducerKey, 'location']) as LocationState
+          if (url !== storeLocation.href) {
+            store.dispatch(onLocationChanged(locationFromUrl(url)))
+          }
         } else {
           inTimeTravelling.current = false
         }
+        trackRouteComplete()
       }
 
       Router.ready(() => {
         // Router.ready ensures that Router.router is defined
-        // @ts-ignore
-        unpatchRouter = patchRouter(Router)
         Router.events.on('routeChangeStart', trackRouteStart)
-        Router.events.on('routeChangeError', trackRouteComplete)
-        Router.events.on('routeChangeComplete', trackRouteComplete)
-        Router.events.on('connectedRouteChangeComplete', listenRouteChanges)
+        Router.events.on('routeChangeError', onRouteChangeFinish)
+        Router.events.on('routeChangeComplete', onRouteChangeFinish)
       })
 
       return () => {
-        unpatchRouter()
         Router.events.off('routeChangeStart', trackRouteStart)
-        Router.events.off('routeChangeError', trackRouteComplete)
-        Router.events.off('routeChangeComplete', trackRouteComplete)
-        Router.events.off('connectedRouteChangeComplete', listenRouteChanges)
+        Router.events.off('routeChangeError', onRouteChangeFinish)
+        Router.events.off('routeChangeComplete', onRouteChangeFinish)
       }
     }, [Router, reducerKey, store])
 

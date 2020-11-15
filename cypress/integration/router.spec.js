@@ -118,12 +118,12 @@ describe('Connected Next Router', () => {
     cy.contains('Push /delay').click();
     cy.location('pathname').should('include', '/delay');
     cy.window().then((window) => {
-      window.reduxStore.dispatch(onLocationChanged(locationFromUrl('/about'), 'PUSH'));
+      window.reduxStore.dispatch(onLocationChanged(locationFromUrl('/about')));
     });
     cy.location('pathname').should('include', '/about');
     cy.window().then((window) => {
-      window.reduxStore.dispatch(onLocationChanged(locationFromUrl('/delay'), 'PUSH'));
-      window.reduxStore.dispatch(onLocationChanged(locationFromUrl('/'), 'POP'));
+      window.reduxStore.dispatch(onLocationChanged(locationFromUrl('/delay')));
+      window.reduxStore.dispatch(onLocationChanged(locationFromUrl('/')));
     });
     cy.location('pathname').should('equal', '/');
   });
