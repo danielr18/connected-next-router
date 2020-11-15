@@ -1,6 +1,6 @@
 import { UrlObject } from 'url'
 import { PUSH, REPLACE, GO, PREFETCH } from './routerMethods'
-import { LocationState, RouterState, RouterAction } from './types'
+import { LocationState, RouterState } from './types'
 
 type Url = UrlObject | string
 
@@ -15,11 +15,10 @@ export type LocationChangeAction = {
   payload: RouterState;
 }
 
-export const onLocationChanged = (location: LocationState, action: RouterAction): LocationChangeAction => ({
+export const onLocationChanged = (location: LocationState): LocationChangeAction => ({
   type: LOCATION_CHANGE,
   payload: {
     location,
-    action
   }
 })
 

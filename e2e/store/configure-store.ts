@@ -7,7 +7,6 @@ import { AppContext } from 'next/app'
 import { State } from '../typings'
 import Router from 'next/router'
 
-
 const combinedReducer = combineReducers({
   router: routerReducer,
 })
@@ -20,7 +19,9 @@ const reducer: Reducer<State, AnyAction> = (state, action) => {
       ...state, // use previous state
       ...action.payload, // apply delta from hydration
     }
-    if (state?.router) nextState.router = state.router // preserve router value on client side navigation
+    if (typeof window !== 'undefined') {
+      nextState.router = state.router 
+    }
     return nextState
   } else {
     return combinedReducer(state, action)
@@ -28,7 +29,7 @@ const reducer: Reducer<State, AnyAction> = (state, action) => {
 }
 
 export const initStore: MakeStore<State> = (context) => {
-  const { asPath, pathname, query } = (context as AppContext).ctx || Router.router || {};
+  const { asPath, query } = (context as AppContext).ctx || Router.router || {};
   let routerMiddleware;
   if (query && query.router === 'custom') {
     Router['pushRoute'] = Router.push;
@@ -43,9 +44,8 @@ export const initStore: MakeStore<State> = (context) => {
   }
   let initialState
   if (asPath) {
-    const url = format({ pathname, query })
     initialState = {
-      router: initialRouterState(url, asPath)
+      router: initialRouterState(asPath),
     }
   }
   return createStore(reducer, initialState, composeEnhancers(applyMiddleware(routerMiddleware)))

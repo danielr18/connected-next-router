@@ -170,7 +170,7 @@ const Navigation = () => {
             href=""
             onClick={e => {
               e.preventDefault()
-              dispatch(push(locationFromUrl('', '')))
+              dispatch(push(locationFromUrl('')))
             }}
           >
             Push empty url
@@ -196,6 +196,28 @@ const Navigation = () => {
             }}
           >
             Push /delay
+          </a>
+        </li>
+        <li>
+          <a
+            href="/ssg"
+            onClick={e => {
+              e.preventDefault()
+              dispatch(push('/ssg'))
+            }}
+          >
+            Push /ssg
+          </a>
+        </li>
+        <li>
+          <a
+            href="/sync"
+            onClick={e => {
+              e.preventDefault()
+              dispatch(push('/sync'))
+            }}
+          >
+            Push /sync
           </a>
         </li>
       </ul>

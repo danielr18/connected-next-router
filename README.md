@@ -1,6 +1,6 @@
 [![Coverage Status](https://coveralls.io/repos/github/danielr18/connected-next-router/badge.svg?branch=test-github-action)](https://coveralls.io/github/danielr18/connected-next-router?branch=test-github-action)
 
-> v3.0.0 requires Next.js 9 or newer, React Redux 7.1.0 or newer, and React 16.8.0 or newer. If you are using Next.js 7-8, check out [v0 branch](https://github.com/danielr18/connected-next-router/tree/v0).
+> v4.0.0 requires Next.js 10 or newer, React Redux 7.1.0 or newer, and React 16.8.0 or newer. If you are using Next.js 9, check out [v3 branch](https://github.com/danielr18/connected-next-router/tree/v3). If you are using Next.js 7-8, check out [v0 branch](https://github.com/danielr18/connected-next-router/tree/v0).
 
 # Connected Next Router
 
@@ -14,9 +14,7 @@ A Redux binding for Next.js Router compatible with Next.js.
 
 :clock9: Support time traveling in Redux DevTools.
 
-:gift: Compatible with [next-routes](https://github.com/fridays/next-routes).
-
-:gem: Ease migration to [next.js](https://github.com/zeit/next.js) framework from codebases using [connected-react-router](https://github.com/supasate/connected-react-router) or [react-router-redux](https://github.com/ReactTraining/react-router/tree/master/packages/react-router-redux).
+:gem: Ease migration to [next.js](https://github.com/zeit/next.js) framework from codebases using [connected-react-router](https://github.com/supasate/connected-react-router) or [react-router-redux](https://github.com/ReactTraining/react-router/tree/master/packages/react-router-redux) (see [migration guide](/MIGRATION.md)).
 
 ## Installation
 
@@ -40,8 +38,10 @@ Or [yarn](https://yarnpkg.com/):
 ```js
 // store/configure-store.js
 import { applyMiddleware, compose, createStore, combineReducers } from 'redux'
-import { routerReducer, createRouterMiddleware, initialRouterState } from 'connected-next-router'
-import { createWrapper } from 'next-redux-wrapper'
+import { createRouterMiddleware, initialRouterState, routerReducer } from 'connected-next-router'
+import { format } from 'url'
+import { createWrapper, HYDRATE } from 'next-redux-wrapper'
+import Router from 'next/router'
 
 const rootReducer = combineReducers({
   ...reducers,
@@ -50,21 +50,19 @@ const rootReducer = combineReducers({
 
 const routerMiddleware = createRouterMiddleware();
 
-/*
-If you use next-routes, you have to import Router from your routes.js file
-and create the router middleware as below:
-
-const routerMiddleware = createRouterMiddleware({
-  Router,
-  methods: {
-    push: 'pushRoute',
-    replace: 'replaceRoute',
-    prefetch: 'prefetchRoute',
-  },
-});
-*/
-
 // Using next-redux-wrapper's initStore
+const reducer = (state, action) => {
+  if (action.type === HYDRATE) {
+    const nextState = { ...state, ...action.payload }
+    if (typeof window !== 'undefined') {
+      nextState.router = state.router 
+    }
+    return nextState
+  } else {
+    return rootReducer(state, action)
+  }
+}
+
 export const initStore = (context) => {
   const routerMiddleware = createRouterMiddleware()
   const { asPath, pathname, query } = context.ctx || Router.router || {};
@@ -75,7 +73,7 @@ export const initStore = (context) => {
       router: initialRouterState(url, asPath)
     }
   }
-  return createStore(rootReducer, initialState, applyMiddleware(routerMiddleware))
+  return createStore(reducer, initialState, applyMiddleware(routerMiddleware))
 }
 
 export const wrapper = createWrapper(initStore)

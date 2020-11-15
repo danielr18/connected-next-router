@@ -48,7 +48,7 @@ describe('Connected Next Router', () => {
       cy.get('head link[rel=prefetch]')
         .last()
         .should('have.attr', 'href')
-        .and('match', /hello\.js$/);
+        .and('match', /hello-\w+\.js$/);
     });
 
     it('Ignores invalid URLs passed to the action', () => {
@@ -111,20 +111,27 @@ describe('Connected Next Router', () => {
     cy.location('pathname').should('equal', '/hello');
   });
 
-  it('Supports time travelling', () => {
+  it("Next Router and Redux Router State always stay in sync ", () => {
     cy.visit('/');
+    cy.contains('Push /sync').click();
+    cy.location('pathname').should('include', '/sync');
+    cy.get('h1').contains('Sync Status: Always Synced');
+  });
+
+  it('Supports time travelling', () => {
+    cy.visit('/ssg');
     cy.contains('Push /about with Redux action').click();
     cy.location('pathname').should('include', '/about');
     cy.contains('Push /delay').click();
     cy.location('pathname').should('include', '/delay');
     cy.window().then((window) => {
-      window.reduxStore.dispatch(onLocationChanged(locationFromUrl('/about'), 'PUSH'));
+      window.reduxStore.dispatch(onLocationChanged(locationFromUrl('/about')));
     });
     cy.location('pathname').should('include', '/about');
     cy.window().then((window) => {
-      window.reduxStore.dispatch(onLocationChanged(locationFromUrl('/delay'), 'PUSH'));
-      window.reduxStore.dispatch(onLocationChanged(locationFromUrl('/'), 'POP'));
+      window.reduxStore.dispatch(onLocationChanged(locationFromUrl('/delay')));
+      window.reduxStore.dispatch(onLocationChanged(locationFromUrl('/ssg')));
     });
-    cy.location('pathname').should('equal', '/');
+    cy.location('pathname').should('equal', '/ssg');
   });
 });
