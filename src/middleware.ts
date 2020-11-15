@@ -5,6 +5,7 @@ import {
   CallRouterMethodAction,
   onLocationChanged,
   LocationChangeAction,
+  LOCATION_CHANGE,
 } from './actions'
 import { Middleware } from 'redux'
 import locationFromUrl from './utils/locationFromUrl'
@@ -40,7 +41,7 @@ const createRouterMiddleware = (structure: Structure) => (middlewareOpts: Router
      * Ensure the Redux router state is synced with Next Router state
      * whenever an action is dispatched.
      */
-    if (Router && !isServer) {
+    if (Router && !isServer && type !== LOCATION_CHANGE) {
       const storeLocation = structure.getIn(store.getState(), [reducerKey, 'location']) as LocationState
       if (Router.asPath !== storeLocation.href) {
         next(onLocationChanged(locationFromUrl(Router.asPath)))
