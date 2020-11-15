@@ -112,7 +112,7 @@ describe('Connected Next Router', () => {
   });
 
   it('Supports time travelling', () => {
-    cy.visit('/');
+    cy.visit('/ssg');
     cy.contains('Push /about with Redux action').click();
     cy.location('pathname').should('include', '/about');
     cy.contains('Push /delay').click();
@@ -123,8 +123,8 @@ describe('Connected Next Router', () => {
     cy.location('pathname').should('include', '/about');
     cy.window().then((window) => {
       window.reduxStore.dispatch(onLocationChanged(locationFromUrl('/delay')));
-      window.reduxStore.dispatch(onLocationChanged(locationFromUrl('/')));
+      window.reduxStore.dispatch(onLocationChanged(locationFromUrl('/ssg')));
     });
-    cy.location('pathname').should('equal', '/');
+    cy.location('pathname').should('equal', '/ssg');
   });
 });

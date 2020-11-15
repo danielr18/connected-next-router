@@ -7,21 +7,22 @@ import { AppContext } from 'next/app'
 import { State } from '../typings'
 import Router from 'next/router'
 
-
 const combinedReducer = combineReducers({
   router: routerReducer,
 })
 
 const composeEnhancers = typeof window !== 'undefined' ? window['__REDUX_DEVTOOLS_EXTENSION_COMPOSE__'] || compose : compose;
 
-let hydrated = false;
 const reducer: Reducer<State, AnyAction> = (state, action) => {
-  if (!hydrated) {
-    hydrated = typeof window !== 'undefined';
-    return {
-      ...state,
-      ...action.payload
-    };
+  if (action.type === HYDRATE) {
+    const nextState = {
+      ...state, // use previous state
+      ...action.payload, // apply delta from hydration
+    }
+    if (typeof window !== 'undefined') {
+      nextState.router = state.router 
+    }
+    return nextState
   } else {
     return combinedReducer(state, action)
   }

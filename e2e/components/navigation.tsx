@@ -198,6 +198,17 @@ const Navigation = () => {
             Push /delay
           </a>
         </li>
+        <li>
+          <a
+            href="/ssg"
+            onClick={e => {
+              e.preventDefault()
+              dispatch(push('/ssg'))
+            }}
+          >
+            Push /ssg
+          </a>
+        </li>
       </ul>
     </div>
   )
