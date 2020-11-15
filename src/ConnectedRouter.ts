@@ -4,6 +4,7 @@ import NextRouter, { SingletonRouter } from 'next/router'
 import { onLocationChanged } from './actions'
 import locationFromUrl from './utils/locationFromUrl'
 import { Structure, LocationState } from './types'
+import patchRouter from './patchRouter'
 
 type ConnectedRouterProps = {
   children?: React.ReactNode;
@@ -75,6 +76,7 @@ const createConnectedRouter = (structure: Structure): React.FC<ConnectedRouterPr
     }, [Router, store, reducerKey])
 
     useEffect(() => {
+      let unpatchRouter = (): void => {}
       function onRouteChangeFinish(url: string): void {
         // Dispatch onLocationChanged except when we're time travelling
         if (!inTimeTravelling.current) {
@@ -90,12 +92,15 @@ const createConnectedRouter = (structure: Structure): React.FC<ConnectedRouterPr
 
       Router.ready(() => {
         // Router.ready ensures that Router.router is defined
+        // @ts-ignore
+        unpatchRouter = patchRouter(Router, store)
         Router.events.on('routeChangeStart', trackRouteStart)
         Router.events.on('routeChangeError', onRouteChangeFinish)
         Router.events.on('routeChangeComplete', onRouteChangeFinish)
       })
 
       return () => {
+        unpatchRouter()
         Router.events.off('routeChangeStart', trackRouteStart)
         Router.events.off('routeChangeError', onRouteChangeFinish)
         Router.events.off('routeChangeComplete', onRouteChangeFinish)

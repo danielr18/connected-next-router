@@ -209,6 +209,17 @@ const Navigation = () => {
             Push /ssg
           </a>
         </li>
+        <li>
+          <a
+            href="/sync"
+            onClick={e => {
+              e.preventDefault()
+              dispatch(push('/sync'))
+            }}
+          >
+            Push /sync
+          </a>
+        </li>
       </ul>
     </div>
   )

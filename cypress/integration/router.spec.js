@@ -111,6 +111,13 @@ describe('Connected Next Router', () => {
     cy.location('pathname').should('equal', '/hello');
   });
 
+  it("Next Router and Redux Router State always stay in sync ", () => {
+    cy.visit('/');
+    cy.contains('Push /sync').click();
+    cy.location('pathname').should('include', '/sync');
+    cy.get('h1').contains('Sync Status: Always Synced');
+  });
+
   it('Supports time travelling', () => {
     cy.visit('/ssg');
     cy.contains('Push /about with Redux action').click();
