@@ -40,7 +40,7 @@ Or [yarn](https://yarnpkg.com/):
 import { applyMiddleware, compose, createStore, combineReducers } from 'redux'
 import { createRouterMiddleware, initialRouterState, routerReducer } from 'connected-next-router'
 import { format } from 'url'
-import { createWrapper } from 'next-redux-wrapper'
+import { createWrapper, HYDRATE } from 'next-redux-wrapper'
 import Router from 'next/router'
 
 const rootReducer = combineReducers({
@@ -51,6 +51,18 @@ const rootReducer = combineReducers({
 const routerMiddleware = createRouterMiddleware();
 
 // Using next-redux-wrapper's initStore
+const reducer = (state, action) => {
+  if (action.type === HYDRATE) {
+    const nextState = { ...state, ...action.payload }
+    if (typeof window !== 'undefined') {
+      nextState.router = state.router 
+    }
+    return nextState
+  } else {
+    return rootReducer(state, action)
+  }
+}
+
 export const initStore = (context) => {
   const routerMiddleware = createRouterMiddleware()
   const { asPath, pathname, query } = context.ctx || Router.router || {};
@@ -61,7 +73,7 @@ export const initStore = (context) => {
       router: initialRouterState(url, asPath)
     }
   }
-  return createStore(rootReducer, initialState, applyMiddleware(routerMiddleware))
+  return createStore(reducer, initialState, applyMiddleware(routerMiddleware))
 }
 
 export const wrapper = createWrapper(initStore)
