@@ -110,10 +110,6 @@ export default wrapper.withRedux(MyApp);
 - [examples/typescript](/examples/typescript) - typescript reference implementation
 - [without next-redux-wrapper](https://github.com/danielr18/connected-next-router/issues/49)
 
-## TODO
-
-- Support [Immutable.js](https://facebook.github.io/immutable-js/)
-
 ## Acknowledgements
 
 [Acknowledge](/ACKNOWLEDGE.md)
