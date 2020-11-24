@@ -27,6 +27,17 @@ const Navigation = () => {
             </li>
             <li>
               <a
+                href="/#foo"
+                onClick={e => {
+                  e.preventDefault()
+                  dispatch(push('/', '/#foo'))
+                }}
+              >
+                Push /#foo with Redux action
+              </a>
+            </li>
+            <li>
+              <a
                 href="/blog/2"
                 onClick={e => {
                   e.preventDefault()

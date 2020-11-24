@@ -59,7 +59,7 @@ const createRouterMiddleware = (structure: Structure) => (middlewareOpts: Router
         throw new Error(`Router method "${method}" for ${payloadMethod} action does not exist`)
       }
     } else {
-      next(action)
+      return next(action)
     }
   }
 }
