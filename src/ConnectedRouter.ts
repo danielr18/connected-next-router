@@ -97,6 +97,8 @@ const createConnectedRouter = (structure: Structure): React.FC<ConnectedRouterPr
         Router.events.on('routeChangeStart', trackRouteStart)
         Router.events.on('routeChangeError', onRouteChangeFinish)
         Router.events.on('routeChangeComplete', onRouteChangeFinish)
+        Router.events.on("hashChangeStart", trackRouteStart)
+        Router.events.on("hashChangeComplete", onRouteChangeFinish)
       })
 
       return () => {
@@ -104,6 +106,8 @@ const createConnectedRouter = (structure: Structure): React.FC<ConnectedRouterPr
         Router.events.off('routeChangeStart', trackRouteStart)
         Router.events.off('routeChangeError', onRouteChangeFinish)
         Router.events.off('routeChangeComplete', onRouteChangeFinish)
+        Router.events.off("hashChangeStart", trackRouteStart)
+        Router.events.off("hashChangeComplete", onRouteChangeFinish)
       }
     }, [Router, reducerKey, store])
 
