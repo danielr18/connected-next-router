@@ -48,25 +48,92 @@ describe('Connected Next Router', () => {
 
     it('Replace route with Redux action', () => {
       cy.contains('Replace /blog/2 with Redux action').click();
-      cy.location('pathname').should('include', '/blog/2');
+      cy.location('pathname').should('equal', '/blog/2');
+      cy.window()
+        .then((window) => window.reduxStore.getState().router)
+        .should('deep.equal', {
+          location: {
+            href: '/blog/2',
+            pathname: '/blog/2',
+            search: '',
+            hash: ''
+          }
+        });
+
       cy.contains('Replace / with Redux action').click();
       cy.location('pathname').should('equal', '/');
+      cy.window()
+        .then((window) => window.reduxStore.getState().router)
+        .should('deep.equal', {
+          location: {
+            href: '/',
+            pathname: '/',
+            search: '',
+            hash: ''
+          }
+        });
     });
 
     it('Go back with Redux action', () => {
       cy.contains('Push /about with Redux action').click();
-      cy.location('pathname').should('include', '/about');
+      cy.location('pathname').should('equal', '/about');
+      cy.location('search').should('equal', '?foo=bar')
+      cy.window()
+        .then((window) => window.reduxStore.getState().router)
+        .should('deep.equal', {
+          location: {
+            href: '/about?foo=bar',
+            pathname: '/about',
+            search: '?foo=bar',
+            hash: ''
+          }
+        });
+
       cy.contains('Go Back with Redux action').click();
       cy.location('pathname').should('equal', '/');
+      cy.window()
+        .then((window) => window.reduxStore.getState().router)
+        .should('deep.equal', {
+          location: {
+            href: '/',
+            pathname: '/',
+            search: '',
+            hash: ''
+          }
+        });
     });
 
     it('Go forward with Redux action', () => {
       cy.contains('Push /about with Redux action').click();
-      cy.location('pathname').should('include', '/about');
+      cy.location('pathname').should('equal', '/about');
+      cy.location('search').should('equal', '?foo=bar')
+      cy.window()
+        .then((window) => window.reduxStore.getState().router)
+        .should('deep.equal', {
+          location: {
+            href: '/about?foo=bar',
+            pathname: '/about',
+            search: '?foo=bar',
+            hash: ''
+          }
+        });
+
       cy.go('back');
       cy.location('pathname').should('equal', '/');
+
       cy.contains('Go Forward with Redux action').click();
-      cy.location('pathname').should('include', '/about');
+      cy.location('pathname').should('equals', '/about');
+      cy.location('search').should('equal', '?foo=bar')
+      cy.window()
+        .then((window) => window.reduxStore.getState().router)
+        .should('deep.equal', {
+          location: {
+            href: '/about?foo=bar',
+            pathname: '/about',
+            search: '?foo=bar',
+            hash: ''
+          }
+        });
     });
 
     it('Prefetch with Redux action', () => {
@@ -79,9 +146,18 @@ describe('Connected Next Router', () => {
     });
 
     it('Ignores invalid URLs passed to the action', () => {
-      cy.visit('/');
       cy.contains('Push empty url').click();
       cy.location('pathname').should('equal', '/');
+      cy.window()
+        .then((window) => window.reduxStore.getState().router)
+        .should('deep.equal', {
+          location: {
+            href: '/',
+            pathname: '/',
+            search: '',
+            hash: ''
+          }
+        });
     });
   });
 
