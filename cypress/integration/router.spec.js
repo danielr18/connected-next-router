@@ -14,9 +14,36 @@ describe('Connected Next Router', () => {
       cy.visit('/');
     });
 
-    it('Push route with Redux action', () => {
+    it('Push route (with query) with Redux action', () => {
       cy.contains('Push /about with Redux action').click();
-      cy.location('pathname').should('include', '/about');
+      cy.location('pathname').should('equal', '/about');
+      cy.location('search').should('equal', '?foo=bar')
+      cy.window()
+        .then((window) => window.reduxStore.getState().router)
+        .should('deep.equal', {
+          location: {
+            href: '/about?foo=bar',
+            pathname: '/about',
+            search: '?foo=bar',
+            hash: ''
+          }
+        });
+    });
+
+    it('Push route (with hash) with Redux action', () => {
+      cy.contains('Push /#foo with Redux action').click();
+      cy.location('pathname').should('equal', '/');
+      cy.location('hash').should('equal', '#foo')
+      cy.window()
+        .then((window) => window.reduxStore.getState().router)
+        .should('deep.equal', {
+          location: {
+            href: '/#foo',
+            pathname: '/',
+            search: '',
+            hash: '#foo'
+          }
+        });
     });
 
     it('Replace route with Redux action', () => {
