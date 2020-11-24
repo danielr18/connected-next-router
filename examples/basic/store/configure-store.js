@@ -20,7 +20,7 @@ const reducer = (state, action) => {
     }
     if (typeof window !== 'undefined' && state?.router) {
       // preserve router value on client side navigation
-      nextState.router = state.router 
+      nextState.router = state.router
     }
     return nextState
   } else {
@@ -30,7 +30,7 @@ const reducer = (state, action) => {
 
 export const initStore = (context) => {
   const routerMiddleware = createRouterMiddleware()
-  const { asPath } = context.ctx || Router.router || {};
+  const { asPath } = context.ctx || Router.router || {}
   let initialState
   if (asPath) {
     initialState = {
