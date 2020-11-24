@@ -37,43 +37,46 @@ Or [yarn](https://yarnpkg.com/):
 
 ```js
 // store/configure-store.js
-import { applyMiddleware, compose, createStore, combineReducers } from 'redux'
+import { createStore, applyMiddleware, combineReducers } from 'redux'
 import { createRouterMiddleware, initialRouterState, routerReducer } from 'connected-next-router'
-import { format } from 'url'
-import { createWrapper, HYDRATE } from 'next-redux-wrapper'
+import { HYDRATE, createWrapper } from 'next-redux-wrapper'
 import Router from 'next/router'
 
-const rootReducer = combineReducers({
-  ...reducers,
-  router: routerReducer
-});
+const bindMiddleware = (middleware) => {
+  const { composeWithDevTools } = require('redux-devtools-extension')
+  return composeWithDevTools(applyMiddleware(...middleware))
+}
 
-const routerMiddleware = createRouterMiddleware();
+const combinedReducer = combineReducers({
+  router: routerReducer,
+})
 
-// Using next-redux-wrapper's initStore
 const reducer = (state, action) => {
   if (action.type === HYDRATE) {
-    const nextState = { ...state, ...action.payload }
-    if (typeof window !== 'undefined') {
-      nextState.router = state.router 
+    const nextState = {
+      ...state, // use previous state
+      ...action.payload, // apply delta from hydration
+    }
+    if (typeof window !== 'undefined' && state?.router) {
+      // preserve router value on client side navigation
+      nextState.router = state.router
     }
     return nextState
   } else {
-    return rootReducer(state, action)
+    return combinedReducer(state, action)
   }
 }
 
 export const initStore = (context) => {
   const routerMiddleware = createRouterMiddleware()
-  const { asPath, pathname, query } = context.ctx || Router.router || {};
+  const { asPath } = context.ctx || Router.router || {}
   let initialState
   if (asPath) {
-    const url = format({ pathname, query })
     initialState = {
-      router: initialRouterState(url, asPath)
+      router: initialRouterState(asPath)
     }
   }
-  return createStore(reducer, initialState, applyMiddleware(routerMiddleware))
+  return createStore(reducer, initialState, bindMiddleware([routerMiddleware]))
 }
 
 export const wrapper = createWrapper(initStore)
@@ -85,23 +88,24 @@ export const wrapper = createWrapper(initStore)
 
 ```js
 // pages/_app.js
-import App from 'next/app';
+import App from 'next/app'
+import React from 'react'
 import { ConnectedRouter } from 'connected-next-router'
 import { wrapper } from '../store/configure-store'
 
-class MyApp extends App {
+class ExampleApp extends App {
   render() {
-    const { Component, pageProps } = this.props;
+    const { Component, pageProps } = this.props
     return (
       <ConnectedRouter>
-        <Component { ...pageProps } />
+        <Component {...pageProps} />
       </ConnectedRouter>
-    );
+    )
   }
 }
 
 // wrapper.withRedux wraps the App with react-redux's Provider
-export default wrapper.withRedux(MyApp);
+export default wrapper.withRedux(ExampleApp)
 ```
 
 ## Examples
