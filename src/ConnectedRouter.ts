@@ -95,7 +95,7 @@ const createConnectedRouter = (structure: Structure): React.FC<ConnectedRouterPr
         // @ts-ignore
         unpatchRouter = patchRouter(Router, store)
         Router.events.on('routeChangeStart', trackRouteStart)
-        Router.events.on('routeChangeError', onRouteChangeFinish)
+        Router.events.on('routeChangeError', trackRouteComplete)
         Router.events.on('routeChangeComplete', onRouteChangeFinish)
         Router.events.on('hashChangeStart', trackRouteStart)
         Router.events.on('hashChangeComplete', onRouteChangeFinish)
@@ -104,7 +104,7 @@ const createConnectedRouter = (structure: Structure): React.FC<ConnectedRouterPr
       return () => {
         unpatchRouter()
         Router.events.off('routeChangeStart', trackRouteStart)
-        Router.events.off('routeChangeError', onRouteChangeFinish)
+        Router.events.off('routeChangeError', trackRouteComplete)
         Router.events.off('routeChangeComplete', onRouteChangeFinish)
         Router.events.off('hashChangeStart', trackRouteStart)
         Router.events.off('hashChangeComplete', onRouteChangeFinish)
