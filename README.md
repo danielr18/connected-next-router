@@ -42,15 +42,14 @@ import { createRouterMiddleware, initialRouterState, routerReducer } from 'conne
 import { HYDRATE, createWrapper } from 'next-redux-wrapper'
 import Router from 'next/router'
 
-const bindMiddleware = (middleware) => {
-  const { composeWithDevTools } = require('redux-devtools-extension')
-  return composeWithDevTools(applyMiddleware(...middleware))
-}
+const rootReducer = combineReducers({
+  // Add other reducers
+  router: routerReducer
+});
 
-const combinedReducer = combineReducers({
-  router: routerReducer,
-})
+const routerMiddleware = createRouterMiddleware();
 
+// Using next-redux-wrapper's initStore
 const reducer = (state, action) => {
   if (action.type === HYDRATE) {
     const nextState = {
@@ -63,7 +62,7 @@ const reducer = (state, action) => {
     }
     return nextState
   } else {
-    return combinedReducer(state, action)
+    return rootReducer(state, action)
   }
 }
 
@@ -76,7 +75,7 @@ export const initStore = (context) => {
       router: initialRouterState(asPath)
     }
   }
-  return createStore(reducer, initialState, bindMiddleware([routerMiddleware]))
+  return createStore(reducer, initialState, applyMiddleware(routerMiddleware))
 }
 
 export const wrapper = createWrapper(initStore)
@@ -89,7 +88,6 @@ export const wrapper = createWrapper(initStore)
 ```js
 // pages/_app.js
 import App from 'next/app'
-import React from 'react'
 import { ConnectedRouter } from 'connected-next-router'
 import { wrapper } from '../store/configure-store'
 
