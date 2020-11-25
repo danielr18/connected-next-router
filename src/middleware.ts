@@ -44,7 +44,7 @@ const createRouterMiddleware = (structure: Structure) => (middlewareOpts: Router
     if (Router && !isServer && type !== LOCATION_CHANGE) {
       const storeLocation = structure.getIn(store.getState(), [reducerKey, 'location']) as LocationState
       if (Router.asPath !== storeLocation.href) {
-        next(onLocationChanged(locationFromUrl(Router.asPath)))
+        store.dispatch(onLocationChanged(locationFromUrl(Router.asPath)))
       }
     }
 
