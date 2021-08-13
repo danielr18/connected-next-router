@@ -10,7 +10,7 @@
   },
   "dependencies": {
     "connected-next-router": "link:../../",
-    "next": "link:../../node_modules/next",
+    "next": "11.1.0",
     "next-redux-wrapper": "^6.0.0",
     "react": "link:../../node_modules/react",
     "react-dom": "link:../../node_modules/react-dom",
