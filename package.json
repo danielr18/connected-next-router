@@ -13,7 +13,13 @@
     "react-router-redux"
   ],
   "main": "index.js",
-  "module": "es/index.js",
+  "exports":{
+    "node": {
+      "module": "./es/index.js",
+      "require": "./index.js"
+    },
+    "default": "./es/index.js"
+  },
   "types": "index.d.ts",
   "files": [
     "actions.js",
