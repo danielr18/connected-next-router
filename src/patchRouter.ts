@@ -1,5 +1,4 @@
 import { SingletonRouter, Router } from 'next/router'
-import { ParsedUrlQuery } from 'querystring'
 import ReactDOM from 'react-dom'
 import { Store } from 'redux'
 import { onLocationChanged } from './actions'
