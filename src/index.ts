@@ -2,6 +2,7 @@ import plainStructure from './structure/plain'
 import createConnectedRouter from './ConnectedRouter'
 import createRouterReducer from './reducer'
 import createInitialRouterState from './utils/createInitialRouterState'
+import _createRouterMiddleware from './middleware'
 
 export {
   LOCATION_CHANGE,
@@ -15,7 +16,6 @@ export {
   prefetch,
 } from './actions'
 export { default as routerMethods } from './routerMethods'
-import _createRouterMiddleware from './middleware'
 
 export const initialRouterState = createInitialRouterState(plainStructure)
 export const routerReducer = createRouterReducer(plainStructure)
