@@ -6,7 +6,13 @@ import _createRouterMiddleware from './middleware'
 
 export {
   LOCATION_CHANGE,
+  LocationChangeAction,
   CALL_ROUTER_METHOD,
+  CallRouterMethodAction,
+  CallRouterMethodPushPayload,
+  CallRouterMethodReplacePayload,
+  CallRouterMethodGoPayload,
+  CallRouterMethodPrefetchPayload,
   routerActions,
   push,
   replace,
@@ -16,6 +22,7 @@ export {
   prefetch,
 } from './actions'
 export { default as routerMethods } from './routerMethods'
+export { LocationState, RouterState } from './types'
 
 export const initialRouterState = createInitialRouterState(plainStructure)
 export const routerReducer = createRouterReducer(plainStructure)
