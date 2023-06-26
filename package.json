@@ -13,7 +13,7 @@
     "react-router-redux"
   ],
   "main": "index.js",
-  "exports":{
+  "exports": {
     "node": {
       "module": "./es/index.js",
       "require": "./index.js"
@@ -57,9 +57,9 @@
     "cy:run": "cypress run"
   },
   "peerDependencies": {
-    "next": "^10.0.0 || ^11.0.0 || ^12.0.0",
+    "next": "^10.0.0 || ^11.0.0 || ^12.0.0 || ^13.0.0",
     "react": "^16.8.0 || ^17.0.0 || ^18.0.0",
-    "react-redux": "^7.1.0",
+    "react-redux": "^7.1.0 || ^8.0.0",
     "redux": "^3.6.0 || ^4.0.0"
   },
   "devDependencies": {
