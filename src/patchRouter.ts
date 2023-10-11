@@ -8,23 +8,29 @@ type RouterToPatch = SingletonRouter & { router: Router }
 
 const patchRouter = (Router: RouterToPatch, store: Store): (() => void) => {
   const unpatchedMethods = {
-    set: Router.router.set,
+    set: Reflect.get(Router.router, 'set'),
   }
 
-  Router.router.set = function (...args) {
+  Reflect.set(Router.router, 'set', function (this: any, ...args: any[]) {
     if (!unpatchedMethods.set) {
       return Promise.resolve()
     }
     return new Promise((resolve, reject) => {
       ReactDOM.unstable_batchedUpdates(() => {
-        unpatchedMethods.set.apply(Router.router, args).then(resolve, reject)
+        try {
+          const result = Reflect.apply(unpatchedMethods.set, Router.router, args)
+          if (result instanceof Promise) result.then(resolve, reject)
+          else resolve(result)
+        } catch (err) {
+          reject(err)
+        }
         store.dispatch(onLocationChanged(locationFromUrl(Router.asPath)))
       })
     })
-  }
+  })
 
   return () => {
-    Router.router.set = unpatchedMethods.set
+    Reflect.set(Router.router, 'set', unpatchedMethods.set)
   }
 }
 
