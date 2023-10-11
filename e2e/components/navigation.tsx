@@ -98,17 +98,17 @@ const Navigation = () => {
           <ul>
             <li>
               <Link href={{ pathname: '/' }}>
-                <a>Push /</a>
+               Push /
               </Link>
             </li>
             <li>
               <Link href="/about?foo=bar" replace>
-                <a>Replace /about</a>
+                Replace /about
               </Link>
             </li>
             <li>
               <Link href="/blog/[postId]" as="/blog/3">
-                <a>Push /blog/3</a>
+                Push /blog/3
               </Link>
             </li>
           </ul>
