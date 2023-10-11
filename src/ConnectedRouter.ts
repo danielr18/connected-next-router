@@ -91,8 +91,7 @@ const createConnectedRouter = (structure: Structure): React.FC<ConnectedRouterPr
       }
 
       Router.ready(() => {
-        // Router.ready ensures that Router.router is defined
-        // @ts-ignore
+        // @ts-expect-error Router.ready ensures that Router.router is defined
         unpatchRouter = patchRouter(Router, store)
         Router.events.on('routeChangeStart', trackRouteStart)
         Router.events.on('routeChangeError', trackRouteComplete)

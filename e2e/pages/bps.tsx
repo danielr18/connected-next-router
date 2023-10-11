@@ -1,23 +1,23 @@
 import React from 'react'
 import { useSelector } from 'react-redux'
 import { NextPage } from 'next'
-import Router from 'next/router'
+import { useRouter } from 'next/router'
 import Navigation from '../components/navigation'
 import { State } from '../typings'
 
 const About : NextPage = () => {
   const routerState = useSelector((state: State) => state.router)
-
+  const router = useRouter()
   React.useEffect(() => {
-    Router.beforePopState(() => {
-      Router.replace('/hello')
-      return true;
+    router.beforePopState(() => {
+      router.replace('/hello')
+      return false;
     });
-  }, [Router])
+  }, [router])
 
   return (
     <div>
-      <h1>About</h1>
+      <h1>BPS</h1>
       <pre>{JSON.stringify(routerState)}</pre>
       <Navigation />
     </div>

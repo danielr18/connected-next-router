@@ -5,5 +5,4 @@ import { AppContext } from 'next/app';
 import { RouterState } from '../test-lib/types';
 export interface State {
   router: RouterState,
-  routerEventCounts: any
 }
