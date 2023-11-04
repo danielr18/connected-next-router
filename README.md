@@ -1,6 +1,6 @@
 [![Coverage Status](https://coveralls.io/repos/github/danielr18/connected-next-router/badge.svg?branch=test-github-action)](https://coveralls.io/github/danielr18/connected-next-router?branch=test-github-action)
 
-> v4.0.0 requires Next.js 10 or newer, React Redux 7.1.0 or newer, and React 16.8.0 or newer. If you are using Next.js 9, check out [v3 branch](https://github.com/danielr18/connected-next-router/tree/v3). If you are using Next.js 7-8, check out [v0 branch](https://github.com/danielr18/connected-next-router/tree/v0).
+> v5.0.0 requires Next.js 10 or newer, React Redux 7.1.0 or newer, and React 16.8.0 or newer. If you are using Next.js 9, check out [v3 branch](https://github.com/danielr18/connected-next-router/tree/v3). If you are using Next.js 7-8, check out [v0 branch](https://github.com/danielr18/connected-next-router/tree/v0).
 
 # Connected Next Router
 
