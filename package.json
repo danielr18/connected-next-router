@@ -1,6 +1,6 @@
 {
   "name": "connected-next-router",
-  "version": "5.0.0-rc.2",
+  "version": "5.0.0",
   "description": "A Redux binding for Next.js Router",
   "author": "Daniel Reinoso <danielreinoso1807@gmail.com> (http://danielr18.github.io)",
   "license": "MIT",
@@ -59,8 +59,8 @@
   "peerDependencies": {
     "next": ">=10",
     "react": "*",
-    "react-redux": "*",
-    "redux": "*"
+    "react-redux": ">=7.1.0",
+    "redux": ">=3.6.0"
   },
   "devDependencies": {
     "@cypress/code-coverage": "^3.12.8",
