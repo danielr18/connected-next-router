@@ -6,6 +6,7 @@
 		"module":"commonjs",
     "outDir": "",
 		"moduleResolution": "node",
+    "skipLibCheck": true,
 		"strict": true,
 		"removeComments": true,
 		"esModuleInterop": true

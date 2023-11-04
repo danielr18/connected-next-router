@@ -1,5 +1,3 @@
-/// <reference types="Cypress" />
-
 import { onLocationChanged } from '../../test-lib/actions';
 import locationFromUrl from '../../test-lib/utils/locationFromUrl';
 
@@ -227,10 +225,12 @@ describe('Connected Next Router', () => {
     cy.location('pathname').should('include', '/about');
     cy.contains('Push /delay').click();
     cy.location('pathname').should('include', '/delay');
+    cy.contains('Delay');
     cy.window().then((window) => {
       window.reduxStore.dispatch(onLocationChanged(locationFromUrl('/about')));
     });
     cy.location('pathname').should('include', '/about');
+    cy.contains('About');
     cy.window().then((window) => {
       window.reduxStore.dispatch(onLocationChanged(locationFromUrl('/delay')));
       window.reduxStore.dispatch(onLocationChanged(locationFromUrl('/ssg')));

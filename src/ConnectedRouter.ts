@@ -91,7 +91,7 @@ const createConnectedRouter = (structure: Structure): React.FC<ConnectedRouterPr
       }
 
       Router.ready(() => {
-        // Router.ready ensures that Router.router is defined
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
         // @ts-ignore
         unpatchRouter = patchRouter(Router, store)
         Router.events.on('routeChangeStart', trackRouteStart)
