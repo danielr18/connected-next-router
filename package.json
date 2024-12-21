@@ -79,7 +79,7 @@
     "eslint-plugin-react-hooks": "^4.6.0",
     "istanbul-lib-coverage": "^3.2.0",
     "istanbul-lib-instrument": "^6.0.1",
-    "next": "^14.0.1",
+    "next": "^14.2.15",
     "next-redux-wrapper": "^8.1.0",
     "nyc": "^15.1.0",
     "redux": "^4.2.1",
